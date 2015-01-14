@@ -7,16 +7,25 @@ class UdpAdapter implements AdapterInterface
 {
     private $options;
 
+    /**
+     * @param Options $options
+     */
     public function __construct(Options $options)
     {
         $this->options = $options;
     }
 
+    /**
+     * @return Options
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function send($message, $timePrecision = false)
     {
         $message = json_encode($message);

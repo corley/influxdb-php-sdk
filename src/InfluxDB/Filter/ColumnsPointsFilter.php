@@ -4,6 +4,9 @@ namespace InfluxDB\Filter;
 
 class ColumnsPointsFilter implements FilterInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function filter($metrics)
     {
         $response = [];
