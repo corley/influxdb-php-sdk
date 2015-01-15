@@ -6,6 +6,13 @@ use GuzzleHttp\Client as GuzzleClient;
 
 abstract class ClientFactory
 {
+    /**
+     * Create new client
+     * @param array $options
+     * @return Client
+     * @throws InvalidArgumentException If not exist adapter name
+     * or not find adapter
+     */
     public static function create(array $options)
     {
         $defaultOptions = [
