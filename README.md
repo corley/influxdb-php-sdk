@@ -97,6 +97,7 @@ $client->setAdapter($adapter);
 * InfluxAuthorizationException (extends InfluxGeneralException)
 * InfluxBadResponseException (extends InfluxGeneralException)
 * InfluxNoSeriesException (extends InfluxGeneralException)
+* InfluxUnexpectedResponseException (extends InfluxGeneralException)
 
 ### Create your client with the factory method
 

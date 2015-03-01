@@ -9,6 +9,7 @@ use InfluxDB\Exception\InfluxAuthorizationException;
 use InfluxDB\Exception\InfluxBadResponseException;
 use InfluxDB\Exception\InfluxGeneralException;
 use InfluxDB\Exception\InfluxNoSeriesException;
+use InfluxDB\Exception\InfluxUnexpectedResponseException;
 use InfluxDB\Options;
 
 class HttpAdapter implements AdapterInterface, QueryableInterface
@@ -35,6 +36,14 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
     {
         $this->options = $options;
         $this->client = $client ?: new Client();
+    }
+
+    /**
+     * @return Options
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     /**
@@ -70,27 +79,35 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
      */
     protected function parseResponse(ResponseInterface $response)
     {
-        switch ($response->getStatusCode()) {
-            case self::STATUS_CODE_OK :
-                try {
-                    return $response->json();
-                } catch (ParseException $ex) {
-                    throw new InfluxBadResponseException(
-                        sprintf("%s; Response is '%s'", $ex->getMessage(), (string)$response->getBody()),
-                        $ex->getCode(), $ex
-                    );
-                }
-            case self::STATUS_CODE_UNAUTHORIZED:
-            case self::STATUS_CODE_FORBIDDEN:
-                throw new InfluxAuthorizationException((string)$response->getBody(), $response->getStatusCode());
-            case self::STATUS_CODE_BAD_REQUEST:
-                if (strpos((string)$response->getBody(), "Couldn't find series:") !== false) {
-                    throw new InfluxNoSeriesException((string)$response->getBody(), $response->getStatusCode());
-                }
-                throw new InfluxGeneralException((string)$response->getBody(), $response->getStatusCode());
-            default:
-                throw new InfluxGeneralException((string)$response->getBody(), $response->getStatusCode());
+        $statusCode = $response->getStatusCode();
+        if ($statusCode >= 400 && $statusCode < 500) {
+            $message = (string)$response->getBody();
+            if (!$message) {
+                $message = $response->getReasonPhrase();
+            }
+            switch ($statusCode) {
+                case self::STATUS_CODE_UNAUTHORIZED:
+                case self::STATUS_CODE_FORBIDDEN:
+                    throw new InfluxAuthorizationException($message, $statusCode);
+                case self::STATUS_CODE_BAD_REQUEST:
+                    if (strpos($message, "Couldn't find series:") !== false) {
+                        throw new InfluxNoSeriesException($message, $statusCode);
+                    }
+            }
+            throw new InfluxGeneralException($message, $statusCode);
+        } else if ($statusCode == self::STATUS_CODE_OK) {
+            try {
+                return $response->json();
+            } catch (ParseException $ex) {
+                throw new InfluxBadResponseException(
+                    sprintf("%s; Response is '%s'", $ex->getMessage(), (string)$response->getBody()),
+                    $ex->getCode(), $ex
+                );
+            }
+        } else if ($statusCode > 200 && $statusCode < 300) {
+            return true;
         }
+        throw new InfluxUnexpectedResponseException((string)$response->getBody(), $statusCode);
     }
 
     /**

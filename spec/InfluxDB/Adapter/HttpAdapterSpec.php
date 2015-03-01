@@ -10,6 +10,7 @@ use InfluxDB\Exception\InfluxAuthorizationException;
 use InfluxDB\Exception\InfluxBadResponseException;
 use InfluxDB\Exception\InfluxGeneralException;
 use InfluxDB\Exception\InfluxNoSeriesException;
+use InfluxDB\Exception\InfluxUnexpectedResponseException;
 use InfluxDB\Options;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -96,10 +97,20 @@ class HttpAdapterSpec extends ObjectBehavior
                 "exceptions" => false,
                 "body" => json_encode(["name" => "db_name"])
             ]
-        )->shouldBeCalledTimes(1)->willReturn(new Response(200, [], null));
+        )->shouldBeCalledTimes(1)->willReturn(new Response(201, [], null));
 
-        $this->createDatabase("db_name")->shouldReturn(null);
+        $this->createDatabase("db_name")->shouldReturn(true);
     }
+
+    function it_should_return_true_with_success(Client $client) {
+        foreach ([201,204,299] as $code) {
+            $client->post(Argument::any(), Argument::any(), Argument::any())->willReturn(new Response($code, [], null));
+
+            $this->createDatabase("db_name")->shouldReturn(true);
+        }
+    }
+
+
 
     function it_should_throw_no_series_exception (Client $client)
     {
@@ -152,6 +163,13 @@ class HttpAdapterSpec extends ObjectBehavior
             ->during("query", ["select * from tcp.test"]);
     }
 
+    function it_should_throw_general_exception_with_default_message (Client $client)
+    {
+        $client->get(Argument::any(), Argument::any())->willReturn(new Response(409));
+        $this->shouldThrow(new InfluxGeneralException("Conflict", 409))
+            ->during("query", ["select * from tcp.test"]);
+    }
+
     function it_should_throw_bad_response_exception(Client $client)
     {
         $response = new Response(200,[], Stream::factory('bad response'));
@@ -163,6 +181,14 @@ class HttpAdapterSpec extends ObjectBehavior
             ->shouldBeCalledTimes(1);
         $this->shouldThrow(new InfluxBadResponseException("Unable to parse JSON data: JSON_ERROR_SYNTAX - Syntax error, malformed JSON; Response is 'bad response'", 0))
             ->during("send", [["pippo"]]);
+    }
 
+    function it_should_throw_unexpected_response_exception (Client $client)
+    {
+        foreach ([0, 300, 500] as $code) {
+            $client->get(Argument::any(), Argument::any())->willReturn(new Response($code, [], Stream::factory("Message")));
+            $this->shouldThrow(new InfluxUnexpectedResponseException("Message", $code))
+                ->during("query", ["select * from tcp.test"]);
+        }
     }
 }
