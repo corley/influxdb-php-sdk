@@ -3,6 +3,7 @@ namespace InfluxDB;
 
 use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use InfluxDB\Options;
+use InfluxDB\OptionsNine;
 use InfluxDB\Adapter\UdpAdapter;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Filter\ColumnsPointsFilter;
@@ -23,11 +24,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $tcpOptions = $options["tcp"];
 
         $options = new Options();
+        if(getenv("INFLUXDB_VERSION") == "0.9"){
+            $options = new OptionsNine();
+        }
         $options->setHost($tcpOptions["host"]);
         $options->setPort($tcpOptions["port"]);
         $options->setUsername($tcpOptions["username"]);
         $options->setPassword($tcpOptions["password"]);
-        $options->setDatabase($tcpOptions["database"]);
+        if(getenv("INFLUXDB_VERSION") != "0.9"){
+            $options->setDatabase($tcpOptions["database"]);
+        }
 
         $this->options = $options;
 

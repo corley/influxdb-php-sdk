@@ -10,9 +10,9 @@ use InfluxDB\Exception\InfluxBadResponseException;
 use InfluxDB\Exception\InfluxGeneralException;
 use InfluxDB\Exception\InfluxNoSeriesException;
 use InfluxDB\Exception\InfluxUnexpectedResponseException;
-use InfluxDB\OptionsInterface;
+use InfluxDB\OptionsNine;
 
-class HttpAdapter implements AdapterInterface, QueryableInterface
+class HttpNineAdapter implements AdapterInterface, QueryableInterface
 {
     const STATUS_CODE_OK = 200;
     const STATUS_CODE_UNAUTHORIZED = 401;
@@ -32,7 +32,7 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
     /**
      * @param Options $options
      */
-    public function __construct(OptionsInterface $options, Client $client = null)
+    public function __construct(OptionsNine $options, Client $client = null)
     {
         $this->options = $options;
         $this->client = $client ?: new Client();
@@ -112,9 +112,9 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
 
     public function createMessage($name, $values)
     {
-        $data =[];
+        $data = [];
 
-        $data['name'] = $name;
+        $data['database'] = $name;
         $data['columns'] = array_keys($values);
         $data['points'][] = array_values($values);
 
@@ -130,7 +130,7 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
     {
         try {
             $response = $this->client->post(
-                $this->options->getHttpSeriesEndpoint(),
+                $this->options->getHttpSeriesEndpoint()."/write",
                 $this->getRequest($message, [], $timePrecision)
             );
         } catch (\Exception $ex) {
@@ -148,7 +148,7 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
     {
         try {
             $response = $this->client->get(
-                $this->options->getHttpSeriesEndpoint(),
+                $this->options->getHttpSeriesEndpoint()."/query",
                 $this->getRequest([], ["q" => $query], $timePrecision)
             );
         } catch (\Exception $ex) {
@@ -164,8 +164,8 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
     {
         try {
             $response = $this->client->get(
-                $this->options->getHttpDatabaseEndpoint(),
-                $this->getRequest()
+                $this->options->getHttpDatabaseEndpoint()."/query",
+                $this->getRequest([], ["q" => "SHOW DATABASES;", "pretty" => "true"])
             );
         } catch (\Exception $ex) {
             throw new InfluxGeneralException($ex->getMessage(), $ex->getCode(), $ex);
@@ -180,9 +180,9 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
     public function createDatabase($name)
     {
         try {
-            $response = $this->client->post(
-                $this->options->getHttpDatabaseEndpoint(),
-                $this->getRequest(["name" => $name])
+            $response = $this->client->get(
+                $this->options->getHttpDatabaseEndpoint()."/query",
+                $this->getRequest([], ["q" => "CREATE DATABASE {$name}"])
             );
         } catch (\Exception $ex) {
             throw new InfluxGeneralException($ex->getMessage(), $ex->getCode(), $ex);
@@ -197,9 +197,9 @@ class HttpAdapter implements AdapterInterface, QueryableInterface
     public function deleteDatabase($name)
     {
         try {
-            $response = $this->client->delete(
-                $this->options->getHttpDatabaseEndpoint($name),
-                $this->getRequest()
+            $response = $this->client->get(
+                $this->options->getHttpDatabaseEndpoint()."/query",
+                $this->getRequest([], ["q" => "DROP DATABASE {$name}"])
             );
         } catch (\Exception $ex) {
             throw new InfluxGeneralException($ex->getMessage(), $ex->getCode(), $ex);

@@ -69,14 +69,8 @@ class Client
      */
     public function mark($name, array $values, $timePrecision = false)
     {
-        $data =[];
-
         $timePrecision = $this->clearTimePrecision($timePrecision);
-
-        $data['name'] = $name;
-        $data['columns'] = array_keys($values);
-        $data['points'][] = array_values($values);
-
+        $data = $this->getAdapter()->createMessage($name, $values);
         return $this->getAdapter()->send([$data], $timePrecision);
     }
 

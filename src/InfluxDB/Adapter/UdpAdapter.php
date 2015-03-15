@@ -27,6 +27,17 @@ class UdpAdapter implements AdapterInterface
         return $this->options;
     }
 
+    public function createMessage($name, $values)
+    {
+        $data =[];
+
+        $data['name'] = $name;
+        $data['columns'] = array_keys($values);
+        $data['points'][] = array_values($values);
+
+        return $data;
+    }
+
     /**
      * {@inheritDoc}
      */

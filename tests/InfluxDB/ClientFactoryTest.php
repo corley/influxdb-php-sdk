@@ -35,6 +35,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @group factory
      * @group udp
+     * @group 0.8
      */
     public function testCreateUdpClient()
     {
@@ -61,6 +62,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @group factory
      * @group tcp
+     * @group 0.8
      * @dataProvider getTcpAdapters
      */
     public function testCreateTcpClient($adapter)
@@ -96,6 +98,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @group factory
      * @group filters
+     * @group 0.8
      * @dataProvider getTcpAdapters
      */
     public function testCreateTcpClientWithFilter($adapter)

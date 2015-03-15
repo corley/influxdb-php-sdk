@@ -2,7 +2,7 @@
 namespace InfluxDB\Adapter;
 
 use GuzzleHttp\Client;
-use InfluxDB\Options;
+use InfluxDB\OptionsInterface;
 
 /**
  * Class GuzzleAdapter
@@ -26,7 +26,7 @@ class GuzzleAdapter implements AdapterInterface, QueryableInterface
      * @param Client $httpClient
      * @param Options $options
      */
-    public function __construct(Client $httpClient, Options $options)
+    public function __construct(Client $httpClient, OptionsInterface $options)
     {
         $this->httpClient = $httpClient;
         $this->options = $options;
@@ -38,6 +38,17 @@ class GuzzleAdapter implements AdapterInterface, QueryableInterface
     public function getOptions()
     {
         return $this->options;
+    }
+
+    public function createMessage($name, $values)
+    {
+        $data =[];
+
+        $data['name'] = $name;
+        $data['columns'] = array_keys($values);
+        $data['points'][] = array_values($values);
+
+        return $data;
     }
 
     /**
