@@ -43,6 +43,7 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
+     * @group 0.8
      */
     public function testApiWorksCorrectly()
     {
@@ -55,6 +56,7 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
+     * @group 0.8
      */
     public function testQueryApiWorksCorrectly()
     {
@@ -69,6 +71,7 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
+     * @group 0.8
      */
     public function testQueryApiWithMultipleData()
     {
@@ -84,6 +87,7 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
+     * @group 0.8
      */
     public function testQueryApiWithTimePrecision()
     {
@@ -97,6 +101,7 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
+     * @group 0.8
      */
     public function testWriteApiWithTimePrecision()
     {
@@ -112,6 +117,7 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group filter
+     * @group 0.8
      */
     public function testColumnsPointsFilterWorksCorrectly()
     {
@@ -125,6 +131,9 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1410591552000, $body["tcp.test"][0]["time"]);
     }
 
+    /**
+     * @group 0.8
+     */
     public function testListActiveDatabses()
     {
         $databases = $this->object->getDatabases();
@@ -132,6 +141,9 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $databases);
     }
 
+    /**
+     * @group 0.8
+     */
     public function testCreateANewDatabase()
     {
         $this->object->createDatabase("walter");
