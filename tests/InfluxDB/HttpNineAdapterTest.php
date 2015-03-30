@@ -1,11 +1,11 @@
 <?php
 namespace InfluxDB;
 
-use InfluxDB\Adapter\HttpAdapter;
+use InfluxDB\Adapter\HttpNineAdapter;
 use InfluxDB\Adapter\UdpAdapter;
 use InfluxDB\Filter\ColumnsPointsFilter;
 
-class HttpAdapterTest extends \PHPUnit_Framework_TestCase
+class HttpNineAdapterTest extends \PHPUnit_Framework_TestCase
 {
     private $rawOptions;
     private $object;
@@ -18,37 +18,32 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
         $tcpOptions = $options["tcp"];
 
-        $options = new Options();
-        if(getenv("INFLUXDB_VERSION") == "0.9"){
-            $options = new OptionsNine();
-        }
+        $options = new OptionsNine();
         $options->setHost($tcpOptions["host"]);
         $options->setPort($tcpOptions["port"]);
         $options->setUsername($tcpOptions["username"]);
         $options->setPassword($tcpOptions["password"]);
-        if(getenv("INFLUXDB_VERSION") != "0.9"){
-            $options->setDatabase($tcpOptions["database"]);
-        }
 
         $this->options = $options;
 
-        $adapter = new HttpAdapter($options);
+        $adapter = new HttpNineAdapter($options);
 
         $influx = new Client();
         $influx->setAdapter($adapter);
         $this->object = $influx;
 
         $databases = $this->object->getDatabases();
-        foreach ($databases as $database) {
-            $this->object->deleteDatabase($database["name"]);
+        if (array_key_exists("values", $databases['results'][0]['series'][0])) {
+            foreach ($databases['results'][0]['series'][0]['values'] as $database) {
+                $this->object->deleteDatabase($database[0]);
+            }
         }
-
         $this->object->createDatabase($this->rawOptions["tcp"]["database"]);
     }
 
     /**
      * @group tcp
-     * @group 0.8
+     * @group 0.9
      */
     public function testApiWorksCorrectly()
     {
@@ -61,7 +56,6 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
-     * @group 0.8
      */
     public function testQueryApiWorksCorrectly()
     {
@@ -76,7 +70,6 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
-     * @group 0.8
      */
     public function testQueryApiWithMultipleData()
     {
@@ -92,7 +85,6 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
-     * @group 0.8
      */
     public function testQueryApiWithTimePrecision()
     {
@@ -106,7 +98,6 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group tcp
-     * @group 0.8
      */
     public function testWriteApiWithTimePrecision()
     {
@@ -122,7 +113,6 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @group filter
-     * @group 0.8
      */
     public function testColumnsPointsFilterWorksCorrectly()
     {
@@ -136,9 +126,6 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1410591552000, $body["tcp.test"][0]["time"]);
     }
 
-    /**
-     * @group 0.8
-     */
     public function testListActiveDatabses()
     {
         $databases = $this->object->getDatabases();
@@ -146,9 +133,6 @@ class HttpAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $databases);
     }
 
-    /**
-     * @group 0.8
-     */
     public function testCreateANewDatabase()
     {
         $this->object->createDatabase("walter");

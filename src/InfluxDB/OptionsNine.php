@@ -5,7 +5,7 @@ namespace InfluxDB;
 /**
  * Manage in the best way InfluxDB Client Configuration
  */
-class Options implements OptionsInterface
+class OptionsNine implements OptionsInterface
 {
     /**
      * @var string
@@ -31,11 +31,6 @@ class Options implements OptionsInterface
      * @var string
      */
     private $protocol;
-
-    /**
-     * @var string
-     */
-    private $database;
 
     /**
      * Set default options
@@ -136,35 +131,16 @@ class Options implements OptionsInterface
     }
 
     /**
-     * @return string
-     */
-    public function getDatabase()
-    {
-        return $this->database;
-    }
-
-    /**
-     * @param string $database
-     * @return Options
-     */
-    public function setDatabase($database)
-    {
-        $this->database = $database;
-        return $this;
-    }
-
-    /**
      * Build http series edpoint
      * @return string
      */
     public function getHttpSeriesEndpoint()
     {
         return sprintf(
-            "%s://%s:%d/db/%s/series",
+            "%s://%s:%d",
             $this->getProtocol(),
             $this->getHost(),
-            $this->getPort(),
-            $this->getDatabase()
+            $this->getPort()
         );
     }
 
@@ -173,18 +149,14 @@ class Options implements OptionsInterface
      * @param string $name
      * @return string
      */
-    public function getHttpDatabaseEndpoint($name = false)
+    public function getHttpDatabaseEndpoint()
     {
         $url = sprintf(
-            "%s://%s:%d/db",
+            "%s://%s:%d",
             $this->getProtocol(),
             $this->getHost(),
             $this->getPort()
         );
-
-        if ($name !== false) {
-            $url .= "/{$name}";
-        }
 
         return $url;
     }

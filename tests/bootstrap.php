@@ -1,4 +1,6 @@
 <?php
+require __DIR__."/../vendor/autoload.php";
+
 return [
     "tcp" => [
         "host" => getenv('HOST'),
