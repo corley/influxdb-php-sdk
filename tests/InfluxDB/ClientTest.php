@@ -31,6 +31,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $options->setPort($tcpOptions["port"]);
         $options->setUsername($tcpOptions["username"]);
         $options->setPassword($tcpOptions["password"]);
+
         if(getenv("INFLUXDB_VERSION") != "0.9"){
             $options->setDatabase($tcpOptions["database"]);
         }
