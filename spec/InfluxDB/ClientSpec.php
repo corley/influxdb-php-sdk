@@ -3,8 +3,8 @@ namespace spec\InfluxDB;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use InfluxDB\Adapter\GuzzleAdapter;
-use InfluxDB\Adapter\UdpAdapter;
+use InfluxDB\Adapter\V08\GuzzleAdapter;
+use InfluxDB\Adapter\V08\UdpAdapter;
 use InfluxDB\Adapter\AdapterInterface;
 use InfluxDB\Filter\FilterInterface;
 use InfluxDb\Adapter\QueryableInterface;

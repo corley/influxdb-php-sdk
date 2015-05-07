@@ -1,11 +1,11 @@
 <?php
 
-namespace spec\InfluxDB\Adapter;
+namespace spec\InfluxDB\Adapter\V08;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
-use InfluxDB\Adapter\HttpAdapter;
+use InfluxDB\Adapter\V08\HttpAdapter;
 use InfluxDB\Exception\InfluxAuthorizationException;
 use InfluxDB\Exception\InfluxBadResponseException;
 use InfluxDB\Exception\InfluxGeneralException;
@@ -19,7 +19,7 @@ class HttpAdapterSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('InfluxDB\Adapter\HttpAdapter');
+        $this->shouldHaveType('InfluxDB\Adapter\V08\HttpAdapter');
     }
 
     function let(Options $options, Client $client)
