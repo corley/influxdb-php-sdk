@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\InfluxDB\Adapter;
+namespace spec\InfluxDB\Adapter\V08;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -21,7 +21,7 @@ class GuzzleAdapterSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('InfluxDB\Adapter\GuzzleAdapter');
+        $this->shouldHaveType('InfluxDB\Adapter\V08\GuzzleAdapter');
     }
 
     function it_should_send_data_via_post(Client $client, Options $options)

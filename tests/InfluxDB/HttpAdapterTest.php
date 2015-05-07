@@ -1,8 +1,7 @@
 <?php
 namespace InfluxDB;
 
-use InfluxDB\Adapter\HttpAdapter;
-use InfluxDB\Adapter\UdpAdapter;
+use InfluxDB\Adapter\V08\HttpAdapter;
 use InfluxDB\Filter\ColumnsPointsFilter;
 
 class HttpAdapterTest extends \PHPUnit_Framework_TestCase

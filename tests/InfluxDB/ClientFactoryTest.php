@@ -18,7 +18,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testDefaultParams()
     {
-        $client = ClientFactory::create(["adapter" => ["name" => "InfluxDB\\Adapter\\GuzzleAdapter"]]);
+        $client = ClientFactory::create(["adapter" => ["name" => "InfluxDB\\Adapter\\V08\\GuzzleAdapter"]]);
 
         $this->assertNull($client->getFilter());
     }
@@ -40,7 +40,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $options = [
             "adapter" => [
-                "name" => "InfluxDB\\Adapter\\UdpAdapter",
+                "name" => "InfluxDB\\Adapter\\V08\\UdpAdapter",
             ],
             "options" => [
                 "host" => "127.0.0.1",
@@ -52,7 +52,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
         $client = ClientFactory::create($options);
         $this->assertInstanceOf("InfluxDB\\Client", $client);
 
-        $this->assertInstanceOf("InfluxDB\\Adapter\\UdpAdapter", $client->getAdapter());
+        $this->assertInstanceOf("InfluxDB\\Adapter\\V08\\UdpAdapter", $client->getAdapter());
         $this->assertEquals("127.0.0.1", $client->getAdapter()->getOptions()->getHost());
         $this->assertEquals("user", $client->getAdapter()->getOptions()->getUsername());
         $this->assertEquals("pass", $client->getAdapter()->getOptions()->getPassword());
@@ -88,8 +88,8 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
     public function getTcpAdapters()
     {
         return [
-            ["InfluxDB\\Adapter\\GuzzleAdapter"],
-            ["InfluxDB\\Adapter\\HttpAdapter"],
+            ["InfluxDB\\Adapter\\V08\\GuzzleAdapter"],
+            ["InfluxDB\\Adapter\\V08\\HttpAdapter"],
         ];
     }
 
