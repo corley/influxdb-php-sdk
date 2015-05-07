@@ -1,10 +1,10 @@
 <?php
 namespace InfluxDB;
 
-use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use InfluxDB\Options;
-use InfluxDB\Adapter\UdpAdapter;
+use InfluxDB\Adapter\V08\UdpAdapter;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use InfluxDB\Adapter\V08\GuzzleAdapter as InfluxHttpAdapter;
 use InfluxDB\Filter\ColumnsPointsFilter;
 
 class ClientTest extends \PHPUnit_Framework_TestCase

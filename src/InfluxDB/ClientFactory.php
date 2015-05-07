@@ -42,13 +42,13 @@ abstract class ClientFactory
 
         $adapter = null;
         switch ($adapterName) {
-            case 'InfluxDB\\Adapter\\UdpAdapter':
+            case 'InfluxDB\\Adapter\\V08\\UdpAdapter':
                 $adapter = new $adapterName($adapterOptions);
                 break;
-            case 'InfluxDB\\Adapter\\GuzzleAdapter':
+            case 'InfluxDB\\Adapter\\V08\\GuzzleAdapter':
                 $adapter = new $adapterName(new GuzzleClient($options["adapter"]["options"]), $adapterOptions);
                 break;
-            case 'InfluxDB\\Adapter\\HttpAdapter':
+            case 'InfluxDB\\Adapter\\V08\\HttpAdapter':
                 $adapter = new $adapterName($adapterOptions, new GuzzleClient($options["adapter"]["options"]));
                 break;
             default:
