@@ -1,6 +1,6 @@
 <?php
 
-namespace InfluxDB\Adapter;
+namespace InfluxDB\Adapter\V08;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ParseException;
@@ -10,6 +10,8 @@ use InfluxDB\Exception\InfluxBadResponseException;
 use InfluxDB\Exception\InfluxGeneralException;
 use InfluxDB\Exception\InfluxNoSeriesException;
 use InfluxDB\Exception\InfluxUnexpectedResponseException;
+use InfluxDB\Adapter\AdapterInterface;
+use InfluxDB\Adapter\QueryableInterface;
 use InfluxDB\Options;
 
 class HttpAdapter implements AdapterInterface, QueryableInterface

@@ -1,7 +1,8 @@
 <?php
-namespace InfluxDB\Adapter;
+namespace InfluxDB\Adapter\V08;
 
 use InfluxDB\Options;
+use InfluxDB\Adapter\AdapterInterface;
 
 /**
  * Clent adapter to call InfluxDb by UDP protocol

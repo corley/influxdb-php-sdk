@@ -1,8 +1,10 @@
 <?php
-namespace InfluxDB\Adapter;
+namespace InfluxDB\Adapter\V08;
 
 use GuzzleHttp\Client;
 use InfluxDB\Options;
+use InfluxDB\Adapter\AdapterInterface;
+use InfluxDB\Adapter\QueryableInterface;
 
 /**
  * Class GuzzleAdapter
