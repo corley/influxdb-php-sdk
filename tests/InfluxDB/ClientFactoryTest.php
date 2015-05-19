@@ -1,6 +1,8 @@
 <?php
 namespace InfluxDB;
 
+use InfluxDB\ClientFactory;
+
 class ClientFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
