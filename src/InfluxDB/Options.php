@@ -38,6 +38,11 @@ class Options
     private $database;
 
     /**
+     * @var string
+     */
+    private $prefix;
+
+    /**
      * Set default options
      */
     public function __construct()
@@ -46,6 +51,7 @@ class Options
         $this->port = 8086;
         $this->username = "root";
         $this->password = "root";
+        $this->prefix = "";
         $this->setProtocol("http");
     }
 
@@ -154,16 +160,35 @@ class Options
     }
 
     /**
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @param string $prefix
+     * @return Options
+     */
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
+        return $this;
+    }
+
+    /**
      * Build http series edpoint
      * @return string
      */
     public function getHttpSeriesEndpoint()
     {
         return sprintf(
-            "%s://%s:%d/db/%s/series",
+            "%s://%s:%d%s/db/%s/series",
             $this->getProtocol(),
             $this->getHost(),
             $this->getPort(),
+            $this->getPrefix(),
             $this->getDatabase()
         );
     }
@@ -176,10 +201,11 @@ class Options
     public function getHttpDatabaseEndpoint($name = false)
     {
         $url = sprintf(
-            "%s://%s:%d/db",
+            "%s://%s:%d%s/db",
             $this->getProtocol(),
             $this->getHost(),
-            $this->getPort()
+            $this->getPort(),
+            $this->getPrefix()
         );
 
         if ($name !== false) {
@@ -189,3 +215,4 @@ class Options
         return $url;
     }
 }
+
