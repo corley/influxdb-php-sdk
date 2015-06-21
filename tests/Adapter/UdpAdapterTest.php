@@ -5,6 +5,28 @@ use InfluxDB\Options;
 
 class UdpAdapterTest extends \PHPUnit_Framework_TestCase
 {
+    private $options;
+    private $object;
+
+    public function setUp()
+    {
+        $this->options = new Options();
+        $this->object = new UdpAdapter($this->options);
+    }
+
+    public function testRestoreDefaultErrorHandler()
+    {
+        $restored = false;
+        set_error_handler(function() use (&$restored) {
+            $restored = true;
+        });
+
+        $this->object->write("something");
+
+        trigger_error("hi", E_USER_NOTICE);
+        $this->assertTrue($restored);
+    }
+
     /**
      * @dataProvider getMessages
      */
