@@ -14,8 +14,31 @@ class UdpAdapterTest extends \PHPUnit_Framework_TestCase
         $this->object = new UdpAdapter($this->options);
     }
 
+    public function tearDown()
+    {
+        restore_exception_handler();
+        restore_error_handler();
+    }
+
+    public function testSuppressErrors()
+    {
+        $this->options->setHost("invalid-host");
+        $this->options->setSuppressWriteExceptions(true);
+
+        $restored = false;
+        set_error_handler(function() use (&$restored) {
+            $restored = true;
+        });
+
+        $this->object->write("something");
+
+        $this->assertFalse($restored);
+    }
+
     public function testRestoreDefaultErrorHandler()
     {
+        $this->options->setSuppressWriteExceptions(true);
+
         $restored = false;
         set_error_handler(function() use (&$restored) {
             $restored = true;
@@ -26,6 +49,22 @@ class UdpAdapterTest extends \PHPUnit_Framework_TestCase
         trigger_error("hi", E_USER_NOTICE);
         $this->assertTrue($restored);
     }
+
+    public function testDisableErrorSuppression()
+    {
+        $this->options->setHost("invalid-host");
+        $this->options->setSuppressWriteExceptions(false);
+
+        $restored = false;
+        set_error_handler(function() use (&$restored) {
+            $restored = true;
+        });
+
+        $this->object->write("something");
+
+        $this->assertTrue($restored);
+    }
+
 
     /**
      * @dataProvider getMessages

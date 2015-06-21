@@ -8,20 +8,14 @@ namespace InfluxDB;
 class Options
 {
     private $host;
-
     private $port;
-
     private $username;
-
     private $password;
-
     private $protocol;
-
     private $database;
-
     private $retentionPolicy;
-
     private $tags;
+    private $suppressWriteExceptions;
 
     private $prefix;
 
@@ -36,6 +30,18 @@ class Options
 
         $this->setRetentionPolicy("default");
         $this->setTags([]);
+        $this->setSuppressWriteExceptions(false);
+    }
+
+    public function getSuppressWriteExceptions()
+    {
+        return $this->suppressWriteExceptions;
+    }
+
+    public function setSuppressWriteExceptions($suppressWriteExceptions)
+    {
+        $this->suppressWriteExceptions = $suppressWriteExceptions;
+        return $this;
     }
 
     public function getPrefix()

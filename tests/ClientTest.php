@@ -29,6 +29,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $options->setUsername($tcpOptions["username"]);
         $options->setPassword($tcpOptions["password"]);
         $options->setDatabase($tcpOptions["database"]);
+        $options->setSuppressWriteExceptions(false);
 
         $this->options = $options;
 

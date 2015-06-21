@@ -253,6 +253,22 @@ $option->setPrefix("/influxdb"); // your prefix is: /influxdb
 $client->mark("serie", ["data" => "my-data"]);
 ```
 
+## Errors suppression during `mark`
+
+You can stop errors and exceptions during send metrics using the option flag:
+`suppressWriteExceptions`
+
+```
+$options = new Options();
+//...
+$options->setSupressWriteExceptions(true);
+```
+
+**By default errors are not suppressed!**
+
+_The `suppressWriteExceptions` flag stops PHP `errors` and `exceptions` only
+during the `mark` operation and restore your handlers when the operation ends._
+
 ## Benchmarks
 
 Simple benchmarks executed on a Sony Vaio T13 (SVT1311C5E)

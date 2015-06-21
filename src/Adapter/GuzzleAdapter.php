@@ -3,9 +3,12 @@ namespace InfluxDB\Adapter;
 
 use GuzzleHttp\Client;
 use InfluxDB\Options;
+use InfluxDB\Helper\ErrorSuppression;
 
 class GuzzleAdapter extends AdapterAbstract implements QueryableInterface
 {
+    use ErrorSuppression;
+
     private $httpClient;
 
     public function __construct(Client $httpClient, Options $options)
@@ -17,19 +20,32 @@ class GuzzleAdapter extends AdapterAbstract implements QueryableInterface
 
     public function send(array $message)
     {
-        $message = array_replace_recursive($this->getMessageDefaults(), $message);
+        $data = null;
+        try {
+            if ($this->getOptions()->getSuppressWriteExceptions()) {
+                $this->suppressErrors();
+            }
 
-        if (!count($message["tags"])) {
-            unset($message["tags"]);
+            $message = array_replace_recursive($this->getMessageDefaults(), $message);
+
+            if (!count($message["tags"])) {
+                unset($message["tags"]);
+            }
+
+            $httpMessage = [
+                "auth" => [$this->getOptions()->getUsername(), $this->getOptions()->getPassword()],
+                "body" => json_encode($message)
+            ];
+
+            $endpoint = $this->getHttpSeriesEndpoint();
+            $data = $this->httpClient->post($endpoint, $httpMessage);
+        } catch (\Exception $e) {
+            if (!$this->getOptions()->getSuppressWriteExceptions()) {
+                throw $e;
+            }
         }
 
-        $httpMessage = [
-            "auth" => [$this->getOptions()->getUsername(), $this->getOptions()->getPassword()],
-            "body" => json_encode($message)
-        ];
-
-        $endpoint = $this->getHttpSeriesEndpoint();
-        return $this->httpClient->post($endpoint, $httpMessage);
+        return $data;
     }
 
     public function query($query)
