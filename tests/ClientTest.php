@@ -395,6 +395,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $options->setDatabase('...');
         $options->setUsername('root');
         $options->setPassword('root');
+        $options->setSuppressWriteExceptions(true);
 
         $httpAdapter = new \InfluxDB\Adapter\UdpAdapter($options);
 
@@ -402,6 +403,47 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->mark("udp.test", ["mark" => "element"]);
     }
 
+    /**
+     * @group udp
+     */
+    public function testWriteUDPPackagesToNoOne()
+    {
+        $rawOptions = $this->rawOptions;
+        $options = new Options();
+        $options->setHost("127.0.0.1");
+        $options->setUsername("nothing");
+        $options->setPassword("nothing");
+        $options->setPort(64071); //This is a wrong port
+        $options->setSuppressWriteExceptions(true);
+
+        $adapter = new UdpAdapter($options);
+        $object = new Client($adapter);
+
+        $object->mark("udp.test", ["mark" => "element"]);
+    }
+
+    /**
+     * @group udp
+     */
+    public function testWriteUDPPackagesToInvalidHostname()
+    {
+        $rawOptions = $this->rawOptions;
+        $options = new Options();
+        $options->setHost("www.test-invalid.this-is-not-a-tld");
+        $options->setUsername("nothing");
+        $options->setPassword("nothing");
+        $options->setPort(15984);
+        $options->setSuppressWriteExceptions(true);
+
+        $adapter = new UdpAdapter($options);
+        $object = new Client($adapter);
+
+        $object->mark("udp.test", ["mark" => "element"]);
+    }
+
+    /**
+     * @group tcp
+     */
     public function testListActiveDatabses()
     {
         $databases = $this->object->getDatabases();
@@ -438,39 +480,4 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         return $object;
     }
 
-        /**
-     * @group udp
-     */
-    public function testWriteUDPPackagesToNoOne()
-    {
-        $rawOptions = $this->rawOptions;
-        $options = new Options();
-        $options->setHost("127.0.0.1");
-        $options->setUsername("nothing");
-        $options->setPassword("nothing");
-        $options->setPort(64071); //This is a wrong port
-
-        $adapter = new UdpAdapter($options);
-        $object = new Client($adapter);
-
-        $object->mark("udp.test", ["mark" => "element"]);
-    }
-
-    /**
-     * @group udp
-     */
-    public function testWriteUDPPackagesToInvalidHostname()
-    {
-        $rawOptions = $this->rawOptions;
-        $options = new Options();
-        $options->setHost("www.test-invalid.this-is-not-a-tld");
-        $options->setUsername("nothing");
-        $options->setPassword("nothing");
-        $options->setPort(15984);
-
-        $adapter = new UdpAdapter($options);
-        $object = new Client($adapter);
-
-        $object->mark("udp.test", ["mark" => "element"]);
-    }
 }
