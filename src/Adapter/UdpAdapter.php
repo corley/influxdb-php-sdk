@@ -2,9 +2,12 @@
 namespace InfluxDB\Adapter;
 
 use DateTime;
+use InfluxDB\Helper\ErrorSuppression;
 
 final class UdpAdapter extends AdapterAbstract
 {
+    use ErrorSuppression;
+
     public function send(array $message)
     {
         $message = array_replace_recursive($this->getMessageDefaults(), $message);
@@ -15,18 +18,22 @@ final class UdpAdapter extends AdapterAbstract
 
     public function write($message)
     {
-        // Create a handler in order to handle the 'Host is down' message
-        set_error_handler(function() {
-          // Suppress the error, this is the UDP adapter and if we can't send
-          // it then we shouldn't inturrupt their application.
-        });
+        if ($this->getOptions()->getSuppressWriteExceptions()) {
+            $this->suppressErrors();
+        }
 
+        $this->udpSendTo($message);
+
+        if ($this->getOptions()->getSuppressWriteExceptions()) {
+            $this->restoreErrors();
+        }
+    }
+
+    private function udpSendTo($message)
+    {
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
         socket_sendto($socket, $message, strlen($message), 0, $this->getOptions()->getHost(), $this->getOptions()->getPort());
         socket_close($socket);
-
-        // Remove our error handler.
-        restore_error_handler();
     }
 
     private function serialize(array $message)
