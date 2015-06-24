@@ -17,8 +17,8 @@ class UdpAdapter extends AdapterAbstract
     {
         // Create a handler in order to handle the 'Host is down' message
         set_error_handler(function() {
-          // Suppress the error, this is the UDP adapter and if we can't send
-          // it then we shouldn't inturrupt their application.
+            // Suppress the error, this is the UDP adapter and if we can't send
+            // it then we shouldn't inturrupt their application.
         });
 
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
@@ -73,7 +73,7 @@ class UdpAdapter extends AdapterAbstract
         return (int)(microtime(true) * 1e9);
     }
 
-    protected function toKeyValue(array $elems, $escape=false)
+    protected function toKeyValue(array $elems, $escape = false)
     {
         $list = [];
         foreach ($elems as $key => $value) {

@@ -87,7 +87,7 @@ class Options
 
     public function getHost()
     {
-       return $this->host;
+        return $this->host;
     }
 
     public function setHost($host)
