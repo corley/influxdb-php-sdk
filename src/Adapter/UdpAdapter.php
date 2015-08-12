@@ -13,7 +13,7 @@ class UdpAdapter extends AdapterAbstract
             $message["tags"] = array_replace_recursive($this->getOptions()->getTags(), $message["tags"]);
         }
 
-        $message = message_to_inline_protocol($message);
+        $message = message_to_line_protocol($message);
 
         $this->write($message);
     }

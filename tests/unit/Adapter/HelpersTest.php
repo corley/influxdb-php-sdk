@@ -6,7 +6,7 @@ class HelpersTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getElements
      */
-    public function testListToInlineValues($message, $result, $escape)
+    public function testListToLineValues($message, $result, $escape)
     {
         $this->assertEquals($result, list_to_string($message, $escape));
     }
