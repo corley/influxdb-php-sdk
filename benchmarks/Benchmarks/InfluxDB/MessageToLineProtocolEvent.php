@@ -3,14 +3,14 @@ namespace Corley\Benchmarks\InfluxDB;
 
 use Athletic\AthleticEvent;
 
-class MessageToInlineProtocolEvent extends AthleticEvent
+class MessageToLineProtocolEvent extends AthleticEvent
 {
     /**
      * @iterations 10000
      */
-    public function convertMessageToInlineProtocolWithNoTags()
+    public function convertMessageToLineProtocolWithNoTags()
     {
-        \InfluxDB\Adapter\message_to_inline_protocol(
+        \InfluxDB\Adapter\message_to_line_protocol(
             [
                 "points" => [
                     [
@@ -28,9 +28,9 @@ class MessageToInlineProtocolEvent extends AthleticEvent
     /**
      * @iterations 10000
      */
-    public function convertMessageToInlineProtocolWithGlobalTags()
+    public function convertMessageToLineProtocolWithGlobalTags()
     {
-        \InfluxDB\Adapter\message_to_inline_protocol(
+        \InfluxDB\Adapter\message_to_line_protocol(
             [
                 "tags" => [
                     "dc"  => "eu-west-1",
@@ -51,9 +51,9 @@ class MessageToInlineProtocolEvent extends AthleticEvent
     /**
      * @iterations 10000
      */
-    public function convertMessageToInlineProtocolWithDifferentTagLevels()
+    public function convertMessageToLineProtocolWithDifferentTagLevels()
     {
-        \InfluxDB\Adapter\message_to_inline_protocol(
+        \InfluxDB\Adapter\message_to_line_protocol(
             [
                 "tags" => [
                     "dc"  => "eu-west-1",

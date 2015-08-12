@@ -3,7 +3,7 @@ namespace InfluxDB\Adapter;
 
 use DateTime;
 
-function message_to_inline_protocol(array $message)
+function message_to_line_protocol(array $message)
 {
     if (!array_key_exists("points", $message)) {
         return;

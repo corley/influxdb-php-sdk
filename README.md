@@ -200,7 +200,7 @@ $client->mark([
 ]);
 ```
 
-If you want to use the inline protocol directly you have to use the UDP/IP adapter directly
+If you want to use the line protocol directly you have to use the UDP/IP adapter directly
 
 ```
 $udp = new UdpAdapter($options);
@@ -272,20 +272,20 @@ Corley\Benchmarks\InfluxDB\AdapterEvent
     sendDataUsingUdpAdapter : [1,000     ] [0.0000905156136] [11,047.81773]
 ```
 
-### Message to inline protocol conversion
+### Message to line protocol conversion
 
 As you know the SDK will provide a single interface in order to send data to
 InfluxDB (concise or expanded).
 
-The impact of message to inline protocol conversion is:
+The impact of message to line protocol conversion is:
 
 ```
-Corley\Benchmarks\InfluxDB\MessageToInlineProtocolEvent
+Corley\Benchmarks\InfluxDB\MessageToLineProtocolEvent
     Method Name                                            Iterations    Average Time      Ops/second
     ----------------------------------------------------  ------------  --------------    -------------
-    convertMessageToInlineProtocolWithNoTags            : [10,000    ] [0.0000343696594] [29,095.42942]
-    convertMessageToInlineProtocolWithGlobalTags        : [10,000    ] [0.0000437165260] [22,874.64469]
-    convertMessageToInlineProtocolWithDifferentTagLevels: [10,000    ] [0.0000493728638] [20,254.04086]
+    convertMessageToLineProtocolWithNoTags            : [10,000    ] [0.0000343696594] [29,095.42942]
+    convertMessageToLineProtocolWithGlobalTags        : [10,000    ] [0.0000437165260] [22,874.64469]
+    convertMessageToLineProtocolWithDifferentTagLevels: [10,000    ] [0.0000493728638] [20,254.04086]
 ```
 
 ### Query Builder
