@@ -29,7 +29,7 @@ class GuzzleAdapter extends AdapterAbstract implements QueryableInterface
                 "db" => $message["database"],
                 "retentionPolicy" => $message["retentionPolicy"],
             ],
-            "body" => message_to_line_protocol($message)
+            "body" => $this->messageToLineProtocol($message)
         ];
 
         $endpoint = $this->getHttpSeriesEndpoint();

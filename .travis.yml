@@ -6,16 +6,16 @@ php:
   - 7
 
 env:
-  - GUZZLE_VERSION="~4"
-  - GUZZLE_VERSION="~5"
-  - GUZZLE_VERSION="~6"
+  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_0.9.3-rc1_amd64.deb"
+  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_0.9.3-rc1_amd64.deb"
+  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_0.9.3-rc1_amd64.deb"
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install libcurl4-openssl-dev libjson0-dev
-  - wget https://s3.amazonaws.com/influxdb/influxdb_latest_amd64.deb
+  - wget http://s3.amazonaws.com/influxdb/${INFLUXDB_DEB}
   - sudo useradd influxdb
-  - sudo dpkg -i influxdb_latest_amd64.deb
+  - sudo dpkg -i ${INFLUXDB_DEB}
   - sudo cp ./scripts/influxdb_conf.toml /etc/opt/influxdb/influxdb.conf
   - travis_retry sudo service influxdb restart
   - sudo service influxdb status

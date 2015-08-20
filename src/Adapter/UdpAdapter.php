@@ -1,8 +1,6 @@
 <?php
 namespace InfluxDB\Adapter;
 
-use DateTime;
-
 class UdpAdapter extends AdapterAbstract
 {
     public function send(array $message)
@@ -13,7 +11,7 @@ class UdpAdapter extends AdapterAbstract
             $message["tags"] = array_replace_recursive($this->getOptions()->getTags(), $message["tags"]);
         }
 
-        $message = message_to_line_protocol($message);
+        $message = $this->messageToLineProtocol($message);
 
         $this->write($message);
     }
