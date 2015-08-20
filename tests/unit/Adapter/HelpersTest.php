@@ -18,6 +18,8 @@ class HelpersTest extends \PHPUnit_Framework_TestCase
             [["one" => "two"], "one=\"two\"", true],
             [["one" => "two", "three" => "four"], "one=two,three=four", false],
             [["one" => "two", "three" => "four"], "one=\"two\",three=\"four\"", true],
+            [["one" => true, "three" => false], "one=true,three=false", false],
+            [["one" => true, "three" => 0, "four" => 1], "one=true,three=0,four=1", false],
         ];
     }
 }

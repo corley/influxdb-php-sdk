@@ -29,6 +29,8 @@ class GuzzleAdapterTest extends InfluxDBTestCase
                     "fields" => [
                         "cpu" => 18.12,
                         "free" => 712423,
+                        "valid" => true,
+                        "overclock" => false,
                     ],
                 ],
             ]
@@ -38,6 +40,8 @@ class GuzzleAdapterTest extends InfluxDBTestCase
         $this->assertSerieCount("tcp.test", "vm-serie", 1);
         $this->assertValueExistsInSerie("tcp.test", "vm-serie", "cpu", 18.12);
         $this->assertValueExistsInSerie("tcp.test", "vm-serie", "free", 712423);
+        $this->assertValueExistsInSerie("tcp.test", "vm-serie", "valid", true);
+        $this->assertValueExistsInSerie("tcp.test", "vm-serie", "overclock", false);
     }
 
     public function testWorksWithProxies()

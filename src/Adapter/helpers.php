@@ -49,6 +49,10 @@ function list_to_string(array $elements, $escape = false)
             $value = "\"{$value}\"";
         }
 
+        if (is_bool($value)) {
+            $value = ($value) ? "true" : "false";
+        }
+
         $value = "{$key}={$value}";
     });
 

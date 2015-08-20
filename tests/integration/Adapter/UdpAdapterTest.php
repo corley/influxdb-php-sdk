@@ -40,6 +40,7 @@ class UdpAdapterTest extends InfluxDBTestCase
                     "fields" => [
                         "value" => 1233,
                         "with_string" => "this is a string",
+                        "with_bool" => true,
                     ],
                 ],
             ],
@@ -51,5 +52,6 @@ class UdpAdapterTest extends InfluxDBTestCase
         $this->assertSerieCount("udp.test", "mem", 1);
         $this->assertValueExistsInSerie("udp.test", "mem", "value", 1233);
         $this->assertValueExistsInSerie("udp.test", "mem", "with_string", "this is a string");
+        $this->assertValueExistsInSerie("udp.test", "mem", "with_bool", true);
     }
 }
