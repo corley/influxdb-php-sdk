@@ -1,4 +1,5 @@
 language: php
+sudo: false
 
 php:
   - 5.5
@@ -6,18 +7,18 @@ php:
   - 7
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install libcurl4-openssl-dev libjson0-dev
+  - apt-get update
+  - apt-get install libcurl4-openssl-dev libjson0-dev
   - wget https://s3.amazonaws.com/influxdb/influxdb_latest_amd64.deb
-  - sudo useradd influxdb
-  - sudo dpkg -i influxdb_latest_amd64.deb
-  - sudo cp ./scripts/influxdb_conf.toml /etc/opt/influxdb/influxdb.conf
-  - travis_retry sudo service influxdb restart
-  - sudo service influxdb status
-  - sudo apt-get update
-  - sudo apt-get install -y nginx
-  - sudo cp scripts/nginx_proxy.conf /etc/nginx/conf.d/proxy.conf
-  - travis_retry sudo service nginx restart
+  - useradd influxdb
+  - dpkg -i influxdb_latest_amd64.deb
+  - cp ./scripts/influxdb_conf.toml /etc/opt/influxdb/influxdb.conf
+  - travis_retry service influxdb restart
+  - service influxdb status
+  - apt-get update
+  - apt-get install -y nginx
+  - cp scripts/nginx_proxy.conf /etc/nginx/conf.d/proxy.conf
+  - travis_retry service nginx restart
 
 before_script:
   - composer selfupdate
