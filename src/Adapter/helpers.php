@@ -22,21 +22,14 @@ function message_to_line_protocol(array $message)
             $tags = array_replace_recursive($tags, $point["tags"]);
         }
 
-        if (!$tags) {
-            $lines[] = trim(
-                sprintf(
-                    "%s %s %d",
-                    $point["measurement"], list_to_string($point["fields"], true), $unixepoch
-                )
-            );
-        } else {
-            $lines[] = trim(
-                sprintf(
-                    "%s,%s %s %d",
-                    $point["measurement"], list_to_string($tags), list_to_string($point["fields"], true), $unixepoch
-                )
-            );
+        $tagLine = "";
+        if ($tags) {
+            $tagLine = sprintf(",%s", list_to_string($tags));
         }
+
+        $lines[] = sprintf(
+            "%s%s %s %d", $point["measurement"], $tagLine, list_to_string($point["fields"], true), $unixepoch
+        );
     }
 
     return implode("\n", $lines);
