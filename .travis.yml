@@ -1,0 +1,40 @@
+language: php
+sudo: false
+
+php:
+  - 5.5
+  - 5.6
+  - 7
+
+before_install:
+  - apt-get update
+  - apt-get install libcurl4-openssl-dev libjson0-dev
+  - wget https://s3.amazonaws.com/influxdb/influxdb_latest_amd64.deb
+  - useradd influxdb
+  - dpkg -i influxdb_latest_amd64.deb
+  - cp ./scripts/influxdb_conf.toml /etc/opt/influxdb/influxdb.conf
+  - travis_retry service influxdb restart
+  - service influxdb status
+  - apt-get update
+  - apt-get install -y nginx
+  - cp scripts/nginx_proxy.conf /etc/nginx/conf.d/proxy.conf
+  - travis_retry service nginx restart
+
+before_script:
+  - composer selfupdate
+  - composer install --prefer-source
+
+script:
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover clover.xml
+
+matrix:
+  allow_failures:
+    - php: 7
+
+notifications:
+  slack:
+    secure: UN4V33CfLzEcb+5/LWcfcbwROZobbUawgFSiM3TzagBC+7w0DH2rK8DczxkUBs5rNAaYBj+DkxmmF9tiDb0BLB7Jezlq0vmrNBOhregLodOG44/bFwg58YOwTGxt/Iak38A+8VskGj0sSybNq4TB1/K0040wXS5bA+M/9NqyQeo=
