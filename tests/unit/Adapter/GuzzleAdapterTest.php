@@ -111,27 +111,6 @@ class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testDefaultOptionOverwrite()
-    {
-        $options = new Options();
-        $options->setDatabase("db");
-        $httpClient = $this->prophesize("GuzzleHttp\\Client");
-        $httpClient->post(Argument::Any(), [
-            "auth" => ["root", "root"],
-            "query" => [
-                "db" => "mydb",
-                "retentionPolicy" => "myPolicy",
-            ],
-            "body" => null,
-        ])->shouldBeCalledTimes(1);
-
-        $adapter = new InfluxHttpAdapter($httpClient->reveal(), $options);
-        $adapter->send([
-            "database" => "mydb",
-            "retentionPolicy" => "myPolicy"
-        ]);
-    }
-
     public function testEmptyTagsFieldIsRemoved()
     {
         $options = new Options();

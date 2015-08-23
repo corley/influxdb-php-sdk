@@ -19,7 +19,7 @@ abstract class AdapterAbstract implements WritableInterface
         return $this->options;
     }
 
-    protected function getMessageDefaults()
+    private function getMessageDefaults()
     {
         return [
             "database" => $this->getOptions()->getDatabase(),
@@ -34,6 +34,12 @@ abstract class AdapterAbstract implements WritableInterface
     {
         if (!array_key_exists("points", $message)) {
             return;
+        }
+
+        $message = array_replace_recursive($this->getMessageDefaults(), $message);
+
+        if (array_key_exists("tags", $message)) {
+            $message["tags"] = array_replace_recursive($this->getOptions()->getTags(), $message["tags"]);
         }
 
         $unixepoch = (int)(microtime(true) * 1e9);
