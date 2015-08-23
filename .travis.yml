@@ -6,9 +6,9 @@ php:
   - 7
 
 env:
-  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_0.9.3-rc1_amd64.deb"
-  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_0.9.3-rc1_amd64.deb"
-  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_0.9.3-rc1_amd64.deb"
+  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_0.9.3_amd64.deb"
+  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_0.9.3_amd64.deb"
+  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_0.9.3_amd64.deb"
 
 before_install:
   - sudo apt-get update
@@ -19,6 +19,7 @@ before_install:
   - sudo cp ./scripts/influxdb_conf.toml /etc/opt/influxdb/influxdb.conf
   - travis_retry sudo service influxdb restart
   - sudo service influxdb status
+  - /opt/influxdb/influx -version
   - sudo apt-get update
   - sudo apt-get install -y nginx
   - sudo cp scripts/nginx_proxy.conf /etc/nginx/conf.d/proxy.conf

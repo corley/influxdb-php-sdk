@@ -37,7 +37,6 @@ $client->mark("app-search", [
     "key" => "this is my search"
 ]);
 ```
-
 Or use InfluxDB direct messages
 
 ```php
@@ -259,7 +258,7 @@ $client->mark("serie", ["data" => "my-data"]);
 ## Data type management
 
 From InfluxDB version `>=0.9.3` integer types are marked with a trailing `i`.
-This library supports data type, in particular PHP types are mapped to influxdb
+This library supports data types, in particular PHP types are mapped to influxdb
 in this way by defaults:
 
 | PHP     | InfluxDB |

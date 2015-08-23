@@ -19,28 +19,19 @@ abstract class AdapterAbstract implements WritableInterface
         return $this->options;
     }
 
-    private function getMessageDefaults()
-    {
-        return [
-            "database" => $this->getOptions()->getDatabase(),
-            "retentionPolicy" => $this->getOptions()->getRetentionPolicy(),
-            "tags" => $this->getOptions()->getTags(),
-        ];
-    }
-
     abstract public function send(array $message);
 
-    public function messageToLineProtocol(array $message)
+    protected function messageToLineProtocol(array $message)
     {
         if (!array_key_exists("points", $message)) {
             return;
         }
 
-        $message = array_replace_recursive($this->getMessageDefaults(), $message);
-
-        if (array_key_exists("tags", $message)) {
-            $message["tags"] = array_replace_recursive($this->getOptions()->getTags(), $message["tags"]);
+        if (!array_key_exists("tags", $message)) {
+            $message["tags"] = [];
         }
+
+        $message["tags"] = array_replace_recursive($this->getOptions()->getTags(), $message["tags"]);
 
         $unixepoch = (int)(microtime(true) * 1e9);
         if (array_key_exists("time", $message)) {
@@ -50,38 +41,50 @@ abstract class AdapterAbstract implements WritableInterface
 
         $lines = [];
         foreach ($message["points"] as $point) {
-            $tags = array_key_exists("tags", $message) ? $message["tags"] : [];
+            $tags = $message["tags"];
             if (array_key_exists("tags", $point)) {
                 $tags = array_replace_recursive($tags, $point["tags"]);
             }
 
-            $tagLine = "";
-            if ($tags) {
-                $tagLine = sprintf(",%s", $this->listToString($tags));
-            }
+            $tagLine = $this->tagsToString($tags);
 
             $lines[] = sprintf(
-                "%s%s %s %d", $point["measurement"], $tagLine, $this->listToString($point["fields"], true), $unixepoch
+                "%s%s %s %d", $point["measurement"], $tagLine, $this->pointsToString($point["fields"]), $unixepoch
             );
         }
 
         return implode("\n", $lines);
     }
 
-    public function listToString(array $elements, $escape = false)
+    protected function tagsToString(array $tags)
+    {
+        $tagLine = "";
+        if (count($tags) > 0) {
+            array_walk($tags, function(&$value, $key) {
+                $value = "{$key}={$value}";
+            });
+            $tagLine = sprintf(",%s", implode(",", $tags));
+        }
+
+        return $tagLine;
+    }
+
+    protected function pointsToString(array $elements)
     {
         $options = $this->getOptions();
-        array_walk($elements, function(&$value, $key) use ($escape, $options) {
-            if ($escape && is_string($value)) {
-                $value = "\"{$value}\"";
-            }
-
-            if (is_bool($value)) {
-                $value = ($value) ? "true" : "false";
-            }
-
-            if ($options->getForceIntegers() && is_int($value)) {
-                $value = "{$value}i";
+        array_walk($elements, function(&$value, $key) use ($options) {
+            switch(gettype($value)) {
+                case "string":
+                    $value = "\"{$value}\"";
+                    break;
+                case "boolean":
+                    $value = ($value) ? "true" : "false";
+                    break;
+                case "integer":
+                    $value = ($options->getForceIntegers()) ? "{$value}i" : $value;
+                    break;
+                default:
+                    break;
             }
 
             $value = "{$key}={$value}";
