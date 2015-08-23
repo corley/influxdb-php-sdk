@@ -30,7 +30,7 @@ before_script:
   - composer require guzzlehttp/guzzle:${GUZZLE_VERSION} --prefer-source --no-interaction --update-with-dependencies
 
 script:
-  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+  - vendor/bin/phpunit --coverage-clover=clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
