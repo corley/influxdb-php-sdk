@@ -22,7 +22,6 @@ Just use composer
 ```json
 {
   "require": {
-    // ...
     "corley/influxdb-sdk": ">=0.4"
   }
 }
