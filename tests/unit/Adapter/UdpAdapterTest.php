@@ -16,7 +16,6 @@ class UdpAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testRewriteMessages($input, $response)
     {
-        $object = new UdpAdapter(new Options());
         $object = $this->getMockBuilder("InfluxDB\Adapter\UdpAdapter")
             ->setConstructorArgs([new Options()])
             ->setMethods(["write"])
@@ -295,5 +294,111 @@ EOF
                 ],
             ]
         ]);
+    }
+
+    /**
+     * @dataProvider getMessagesWithForceIntegers
+     */
+    public function testForceIntegers($input, $response)
+    {
+        $options = new Options();
+        $options->setForceIntegers(true);
+
+        $object = $this->getMockBuilder("InfluxDB\Adapter\UdpAdapter")
+            ->setConstructorArgs([$options])
+            ->setMethods(["write"])
+            ->getMock();
+        $object->expects($this->once())
+            ->method("write")
+            ->with($response);
+
+        $object->send($input);
+    }
+
+    public function getMessagesWithForceIntegers()
+    {
+        return [
+            [
+                [
+                    "time" => "2009-11-10T23:00:00Z",
+                    "points" => [
+                        [
+                            "measurement" => "cpu",
+                            "fields" => [
+                                "value" => 1,
+                            ],
+                        ],
+                    ],
+                ],
+                "cpu value=1i 1257894000000000000"
+            ],
+            [
+                [
+                    "time" => "2009-11-10T23:00:00Z",
+                    "points" => [
+                        [
+                            "measurement" => "cpu",
+                            "fields" => [
+                                "value" => 1,
+                                "string" => "escape",
+                            ],
+                        ],
+                    ],
+                ],
+                "cpu value=1i,string=\"escape\" 1257894000000000000"
+            ],
+            [
+                [
+                    "tags" => [
+                        "region" => "us-west",
+                        "host" => "serverA",
+                        "env" => "prod",
+                        "target" => "servers",
+                        "zone" => "1c",
+                    ],
+                    "time" => "2009-11-10T23:00:00Z",
+                    "points" => [
+                        [
+                            "measurement" => "cpu",
+                            "fields" => [
+                                "cpu" => 18.12,
+                                "free" => 712432,
+                            ],
+                        ],
+                    ],
+                ],
+                "cpu,region=us-west,host=serverA,env=prod,target=servers,zone=1c cpu=18.12,free=712432i 1257894000000000000"
+            ],
+            [
+                [
+                    "tags" => [
+                        "region" => "us-west",
+                        "host" => "serverA",
+                        "env" => "prod",
+                        "target" => "servers",
+                        "zone" => "1c",
+                    ],
+                    "time" => "2009-11-10T23:00:00Z",
+                    "points" => [
+                        [
+                            "measurement" => "cpu",
+                            "fields" => [
+                                "cpu" => 18.12,
+                            ],
+                        ],
+                        [
+                            "measurement" => "mem",
+                            "fields" => [
+                                "free" => 712432,
+                            ],
+                        ],
+                    ],
+                ],
+                <<<EOF
+cpu,region=us-west,host=serverA,env=prod,target=servers,zone=1c cpu=18.12 1257894000000000000
+mem,region=us-west,host=serverA,env=prod,target=servers,zone=1c free=712432i 1257894000000000000
+EOF
+            ],
+        ];
     }
 }

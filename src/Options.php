@@ -8,22 +8,15 @@ namespace InfluxDB;
 class Options
 {
     private $host;
-
     private $port;
-
     private $username;
-
     private $password;
-
     private $protocol;
-
     private $database;
-
     private $retentionPolicy;
-
     private $tags;
-
     private $prefix;
+    private $forceIntegers;
 
     public function __construct()
     {
@@ -33,9 +26,21 @@ class Options
         $this->setPassword("root");
         $this->setProtocol("http");
         $this->setPrefix("");
+        $this->setForceIntegers(false);
 
         $this->setRetentionPolicy("default");
         $this->setTags([]);
+    }
+
+    public function getForceIntegers()
+    {
+        return $this->forceIntegers;
+    }
+
+    public function setForceIntegers($forceIntegers)
+    {
+        $this->forceIntegers = $forceIntegers;
+        return $this;
     }
 
     public function getPrefix()

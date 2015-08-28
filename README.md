@@ -36,7 +36,6 @@ $client->mark("app-search", [
     "key" => "this is my search"
 ]);
 ```
-
 Or use InfluxDB direct messages
 
 ```php
@@ -253,6 +252,48 @@ $option->setPrefix("/influxdb"); // your prefix is: /influxdb
 // final url will be: http://proxy.influxdb.tld:80/influxdb/write
 
 $client->mark("serie", ["data" => "my-data"]);
+```
+
+## Data type management
+
+From InfluxDB version `>=0.9.3` integer types are marked with a trailing `i`.
+This library supports data types, in particular PHP types are mapped to influxdb
+in this way by defaults:
+
+| PHP     | InfluxDB |
+|---------|----------|
+| int     | float64  |
+| double  | float64  |
+| boolean | boolean  |
+| string  | string   |
+
+```php
+$client->mark("serie", [
+    "value" => 12,  // Marked as float64
+    "elem" => 12.4, // Marked as float64
+]);
+```
+
+If you want to force integer values, we have to configure a particular option:
+
+```php
+$options->setForceIntegers(true); // disabled by default
+```
+
+And the resulting mapping will be:
+
+| PHP     | InfluxDB |
+|---------|----------|
+| int     | int64    |
+| double  | float64  |
+| boolean | boolean  |
+| string  | string   |
+
+```php
+$client->mark("serie", [
+    "value" => 12,  // Marked as int64
+    "elem" => 12.4, // Marked as float64
+]);
 ```
 
 ## Benchmarks

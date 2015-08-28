@@ -35,8 +35,7 @@
         "psr-4": {
             "InfluxDB\\": ["./src/"],
             "Corley\\": ["./benchmarks/"]
-        },
-        "files": ["src/Adapter/helpers.php"]
+        }
     },
     "autoload-dev": {
         "psr-4": {

@@ -17,19 +17,13 @@ class GuzzleAdapter extends AdapterAbstract implements QueryableInterface
 
     public function send(array $message)
     {
-        $message = array_replace_recursive($this->getMessageDefaults(), $message);
-
-        if (!count($message["tags"])) {
-            unset($message["tags"]);
-        }
-
         $httpMessage = [
             "auth" => [$this->getOptions()->getUsername(), $this->getOptions()->getPassword()],
             'query' => [
-                "db" => $message["database"],
-                "retentionPolicy" => $message["retentionPolicy"],
+                "db" => $this->getOptions()->getDatabase(),
+                "retentionPolicy" => $this->getOptions()->getRetentionPolicy(),
             ],
-            "body" => message_to_line_protocol($message)
+            "body" => $this->messageToLineProtocol($message)
         ];
 
         $endpoint = $this->getHttpSeriesEndpoint();

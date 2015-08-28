@@ -111,27 +111,6 @@ class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testDefaultOptionOverwrite()
-    {
-        $options = new Options();
-        $options->setDatabase("db");
-        $httpClient = $this->prophesize("GuzzleHttp\\Client");
-        $httpClient->post(Argument::Any(), [
-            "auth" => ["root", "root"],
-            "query" => [
-                "db" => "mydb",
-                "retentionPolicy" => "myPolicy",
-            ],
-            "body" => null,
-        ])->shouldBeCalledTimes(1);
-
-        $adapter = new InfluxHttpAdapter($httpClient->reveal(), $options);
-        $adapter->send([
-            "database" => "mydb",
-            "retentionPolicy" => "myPolicy"
-        ]);
-    }
-
     public function testEmptyTagsFieldIsRemoved()
     {
         $options = new Options();
@@ -217,6 +196,34 @@ class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
                     "measurement" => "tcp.test",
                     "fields" => [
                         "mark" => "element"
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function testAdapterForceIntegersCorrectly()
+    {
+        $guzzleHttp = $this->prophesize("GuzzleHttp\Client");
+        $guzzleHttp->post("http://localhost:8086/write", [
+            "auth" => ["root", "root"],
+            "query" => [
+                "db" => "db",
+                "retentionPolicy" => "default",
+            ],
+            "body" => 'tcp.test mark="element",value=12i 1257894000000000000',
+        ])->shouldBeCalledTimes(1);
+        $options = (new Options())->setDatabase("db")->setForceIntegers(true);
+        $adapter = new InfluxHttpAdapter($guzzleHttp->reveal(), $options);
+
+        $adapter->send([
+            "time" => "2009-11-10T23:00:00Z",
+            "points" => [
+                [
+                    "measurement" => "tcp.test",
+                    "fields" => [
+                        "mark" => "element",
+                        "value" => 12,
                     ]
                 ]
             ]
