@@ -9,6 +9,9 @@ env:
   - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_0.9.3_amd64.deb"
   - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_0.9.3_amd64.deb"
   - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_0.9.3_amd64.deb"
+  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
+  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
+  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
 
 before_install:
   - sudo apt-get update
