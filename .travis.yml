@@ -42,7 +42,10 @@ after_script:
 
 matrix:
   allow_failures:
-    - php: 7
+    - env: GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
+    - env: GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
+    - env: GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
+
 
 notifications:
   slack:
