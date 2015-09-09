@@ -3,6 +3,8 @@ namespace InfluxDB\Adapter;
 
 use ReflectionMethod;
 use InfluxDB\Options;
+use InfluxDB\Type\IntType;
+use InfluxDB\Type\FloatType;
 
 class AdapterAbstractTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,6 +38,12 @@ class AdapterAbstractTest extends \PHPUnit_Framework_TestCase
             [["one" => (double)12, "three" => 14], "one=12,three=14i", (new Options())->setForceIntegers(true)],
             [["one" => (double)12, "three" => (double)14], "one=12,three=14", (new Options())->setForceIntegers(true)],
             [["one" => (double)"12", "three" => (int)"14"], "one=12,three=14i", (new Options())->setForceIntegers(true)],
+            [["one" => (double)"12", "three" => new IntType("14")], "one=12,three=14i", (new Options())->setForceIntegers(true)],
+            [["one" => (double)"12", "three" => new IntType(14.12)], "one=12,three=14i", (new Options())->setForceIntegers(true)],
+            [["one" => (double)"12", "three" => new IntType(14)], "one=12,three=14i", (new Options())->setForceIntegers(true)],
+            [["one" => (double)"12", "three" => new FloatType(14)], "one=12,three=14", (new Options())->setForceIntegers(true)],
+            [["one" => (double)"12", "three" => new FloatType("14")], "one=12,three=14", (new Options())->setForceIntegers(true)],
+            [["one" => (double)"12", "three" => new FloatType("14.123")], "one=12,three=14.123", (new Options())->setForceIntegers(true)],
         ];
     }
 }
