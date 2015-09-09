@@ -71,25 +71,41 @@ abstract class AdapterAbstract implements WritableInterface
 
     protected function pointsToString(array $elements)
     {
-        $options = $this->getOptions();
-        array_walk($elements, function(&$value, $key) use ($options) {
-            switch(gettype($value)) {
-                case "string":
-                    $value = "\"{$value}\"";
-                    break;
-                case "boolean":
-                    $value = ($value) ? "true" : "false";
-                    break;
-                case "integer":
-                    $value = ($options->getForceIntegers()) ? "{$value}i" : $value;
-                    break;
-                default:
-                    break;
+        array_walk($elements, function(&$value, $key) {
+            $dataType = gettype($value);
+            if (!in_array($dataType, ["string", "double", "boolean", "integer"])) {
+                $dataType = "serializable";
             }
-
+            $dataType = ucfirst($dataType);
+            $value = call_user_func([$this, "convert{$dataType}"], $value);
             $value = "{$key}={$value}";
         });
 
         return implode(",", $elements);
+    }
+
+    protected function convertSerializable($value)
+    {
+        return "{$value}";
+    }
+
+    protected function convertString($value)
+    {
+        return "\"{$value}\"";
+    }
+
+    protected function convertInteger($value)
+    {
+        return (($this->getOptions()->getForceIntegers()) ? "{$value}i" : $value);
+    }
+
+    protected function convertDouble($value)
+    {
+        return $value;
+    }
+
+    protected function convertBoolean($value)
+    {
+        return (($value) ? "true" : "false");
     }
 }

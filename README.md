@@ -251,7 +251,23 @@ $client->mark("serie", [
 ]);
 ```
 
-**Pay attention! This option: `setForceIntegers` will be removed when InfluxDB reaches a stable release `1.*` and we will enable the data type detection by default (BC BREAK)**
+**Pay attention! This option: `setForceIntegers` will be removed when InfluxDB
+reaches a stable release `1.*` and we will enable the data type detection by
+default (BC BREAK)**
+
+### Force data type
+
+If you want to ensure that a type is effectively parsed correctly you can force
+it directly during the send operation
+
+```php
+$client->mark("serie", [
+    "value"  => new IntType(12),  // Marked as int64
+    "elem"   => new FloatType(12.4), // Marked as float64
+    "status" => new BoolType(true), // Marked as boolean
+    "line"   => new StringType("12w"), // Marked as string
+]);
+```
 
 ### Query Builder
 
