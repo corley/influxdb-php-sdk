@@ -12,12 +12,18 @@ This project support InfluxDB API `>= 0.9` - **For InfluxDB v0.8 checkout branch
 
 Supported adapters:
 
- * HTTP
  * UDP/IP
+ * HTTP (via GuzzleHTTP versions: ~4, ~5, ~6)
 
 ## Install it
 
 Just use composer
+
+```sh
+$ composer require corley/influxdb-sdk
+```
+
+Or add to your `composer.json` file
 
 ```json
 {
@@ -36,6 +42,7 @@ $client->mark("app-search", [
     "key" => "this is my search"
 ]);
 ```
+
 Or use InfluxDB direct messages
 
 ```php
@@ -66,7 +73,7 @@ $results = $client->query('select * from "app-search"');
 Actually we supports two network adapters
 
  * UDP/IP - in order to send data via UDP/IP (datagram)
- * HTTP JSON - in order to send/retrieve using HTTP messages (connection oriented)
+ * HTTP - in order to send/retrieve using HTTP messages (connection oriented)
 
 ### Using UDP/IP Adapter
 
@@ -153,66 +160,14 @@ array(1) {
 }
 ```
 
-## UDP/IP support
-
-As you know InfluxDB support UDP/IP with a "line protocol", that is a string
-line, like:
-
-```
-cpu,region=us-west,env=prod,zone=1c cpu=18.12,free=712432 1257894000
-```
-
-In order to simplify the SDK usage, you will use a single method signature
-for both adapters, UDP/IP and HTTP:
-
-**Concise Format**
-
-```php
-$client->mark("serie-name", [
-    "power" => 124.21,
-    "voltage" => 12.4,
-]);
-```
-
-**Extended Format**
-
-```php
-$client->mark([
-    "tags" => [
-        "region" => "us-west",
-        "host" => "serverA",
-        "env" => "prod",
-        "target" => "servers",
-        "zone" => "1c",
-    ],
-    "time" => "2009-11-10T23:00:00Z",
-    "points" => [
-        [
-            "measurement" => "cpu",
-            "fields" => [
-                "cpu" => 18.12,
-                "free" => 712432,
-            ],
-        ],
-    ],
-]);
-```
-
-If you want to use the line protocol directly you have to use the UDP/IP adapter directly
-
-```
-$udp = new UdpAdapter($options);
-$udp->write("cpu,region=us-west,host=serverA,env=prod,target=servers,zone=1c cpu=18.12,free=712432 1257894000");
-```
-
 ## Database operations
 
 You can create, list or destroy databases using dedicated methods
 
 ```php
 $client->getDatabases(); // list all databases
-$client->createDatabase("my.name"); // create a new database with name "my.name"
-$client->deleteDatabase("my.name"); // delete an existing database with name "my.name"
+$client->createDatabase("my-name"); // create a new database with name "my.name"
+$client->deleteDatabase("my-name"); // delete an existing database with name "my.name"
 ```
 
 Actually only queryable adapters can handle databases (implements the
@@ -296,37 +251,7 @@ $client->mark("serie", [
 ]);
 ```
 
-## Benchmarks
-
-Simple benchmarks executed on a Sony Vaio T13 (SVT1311C5E)
-
-### Adapters
-
-The impact using UDP/IP or HTTP adapters
-
-```
-Corley\Benchmarks\InfluxDB\AdapterEvent
-    Method Name                Iterations    Average Time      Ops/second
-    ------------------------  ------------  --------------    -------------
-    sendDataUsingHttpAdapter: [1,000     ] [0.0167509446144] [59.69813]
-    sendDataUsingUdpAdapter : [1,000     ] [0.0000905156136] [11,047.81773]
-```
-
-### Message to line protocol conversion
-
-As you know the SDK will provide a single interface in order to send data to
-InfluxDB (concise or expanded).
-
-The impact of message to line protocol conversion is:
-
-```
-Corley\Benchmarks\InfluxDB\MessageToLineProtocolEvent
-    Method Name                                            Iterations    Average Time      Ops/second
-    ----------------------------------------------------  ------------  --------------    -------------
-    convertMessageToLineProtocolWithNoTags            : [10,000    ] [0.0000343696594] [29,095.42942]
-    convertMessageToLineProtocolWithGlobalTags        : [10,000    ] [0.0000437165260] [22,874.64469]
-    convertMessageToLineProtocolWithDifferentTagLevels: [10,000    ] [0.0000493728638] [20,254.04086]
-```
+**Pay attention! This option: `setForceIntegers` will be removed when InfluxDB reaches a stable release `1.*` and we will enable the data type detection by default (BC BREAK)**
 
 ### Query Builder
 
