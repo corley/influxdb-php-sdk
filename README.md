@@ -8,7 +8,7 @@
 
 Send metrics to InfluxDB and query for any data.
 
-This project support InfluxDB API `>= 0.9` - **For InfluxDB v0.8 checkout branch 0.3**
+This project support InfluxDB API `>= 0.9` - **For InfluxDB v0.8 checkout branch 0.3 (no longer supported)**
 
 Supported adapters:
 
@@ -160,6 +160,29 @@ array(1) {
 }
 ```
 
+If you prefere a more simple response than the original one, you can use
+[`corley/influxdb-http-handlers`](https://github.com/wdalmut/influxdb-http-handlers)
+that convert, the original InfluxDB response, in a more simple response, something like:
+
+```php
+array(1) {
+  'serie_name' => array(2) {
+    [0] => array(4) {
+      'time' => string(30) "2015-09-09T20:42:07.927267636Z"
+      'value1' => int(1)
+      'value2' => int(2)
+      'valueS' => string(6) "string"
+    }
+    [1] => array(4) {
+      'time' => string(30) "2015-09-09T20:42:51.332853369Z"
+      'value1' => int(2)
+      'value2' => int(4)
+      'valueS' => string(11) "another-one"
+    }
+  }
+}
+```
+
 ## Database operations
 
 You can create, list or destroy databases using dedicated methods
@@ -251,14 +274,11 @@ $client->mark("serie", [
 ]);
 ```
 
-**Pay attention! This option: `setForceIntegers` will be removed when InfluxDB
-reaches a stable release `1.*` and we will enable the data type detection by
-default (BC BREAK)**
+**Pay attention! This option: `setForceIntegers` will be removed in the future and we will enable the data type detection by default (BC BREAK)**
 
 ### Force data type
 
-If you want to ensure that a type is effectively parsed correctly you can force
-it directly during the send operation
+If you want to ensure that a type is effectively parsed correctly you can force it directly during the send operation
 
 ```php
 $client->mark("serie", [
