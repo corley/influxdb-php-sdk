@@ -27,33 +27,41 @@ abstract class AdapterAbstract implements WritableInterface
             return;
         }
 
-        if (!array_key_exists("tags", $message)) {
-            $message["tags"] = [];
-        }
-
+        $message = $this->prepareMessageSection($message);
         $message["tags"] = array_replace_recursive($this->getOptions()->getTags(), $message["tags"]);
-
-        $unixepoch = (int)(microtime(true) * 1e9);
-        if (array_key_exists("time", $message)) {
-            $dt = new DateTime($message["time"]);
-            $unixepoch = (int)($dt->format("U") * 1e9);
-        }
 
         $lines = [];
         foreach ($message["points"] as $point) {
-            $tags = $message["tags"];
-            if (array_key_exists("tags", $point)) {
-                $tags = array_replace_recursive($tags, $point["tags"]);
-            }
+            $point = $this->prepareMessageSection($point, $message["time"]);
+            $tags = array_replace_recursive($message["tags"], $point["tags"]);
 
             $tagLine = $this->tagsToString($tags);
 
             $lines[] = sprintf(
-                "%s%s %s %d", $point["measurement"], $tagLine, $this->pointsToString($point["fields"]), $unixepoch
+                "%s%s %s %d", $point["measurement"], $tagLine, $this->pointsToString($point["fields"]), $point["time"]
             );
         }
 
         return implode("\n", $lines);
+    }
+
+    private function prepareMessageSection(array $message, $unixepoch = false)
+    {
+        if (!array_key_exists("tags", $message)) {
+            $message["tags"] = [];
+        }
+
+        if (!$unixepoch) {
+            $unixepoch = (int)(microtime(true) * 1e9);
+        }
+
+        if (array_key_exists("time", $message)) {
+            $dt = new DateTime($message["time"]);
+            $unixepoch = (int)($dt->format("U") * 1e9);
+        }
+        $message["time"] = $unixepoch;
+
+        return $message;
     }
 
     protected function tagsToString(array $tags)
