@@ -82,10 +82,12 @@ In order to use the UDP/IP adapter your must have PHP compiled with the `sockets
 **Usage**
 
 ```php
-$options = new Options();
-$adapter = new UdpAdapter($options);
+$reader = ...
 
-$client = new Client($adapter);
+$options = new Options();
+$writer = new Udp\Writer($options);
+
+$client = new Client($reader, $writer);
 ```
 
 ### Using HTTP Adapters
@@ -96,47 +98,45 @@ Actually Guzzle is used as HTTP client library
 <?php
 $http = new \GuzzleHttp\Client();
 
-$options = new Options();
-$adapter = new GuzzleAdapter($http, $options);
+$writer = ...
 
-$client = new Client($adapter);
+$options = new Options();
+$reader = new Http\Reader($http, $options);
+
+$client = new Client($reader, $writer);
 ```
 
-## Create your client with the factory method
+## Mixing readers and writers
 
-Effectively the client creation is not so simple, for that
-reason you can you the factory method provided with the library.
+Of course you can mix Udp\Ip and Http adapters in order to write data points
+with UDP/IP protocol but read information using HTTP.
 
 ```php
-$options = [
-    "adapter" => [
-        "name" => "InfluxDB\\Adapter\\GuzzleAdapter",
-        "options" => [
-            // guzzle options
-        ],
-    ],
-    "options" => [
-        "host" => "my.influx.domain.tld",
-        "db" => "mydb",
-        "retention_policy" => "myPolicy",
-        "tags" => [
-            "env" => "prod",
-            "app" => "myApp",
-        ],
-    ]
-];
-$client = \InfluxDB\ClientFactory::create($options);
+$reader = new Http\Reader($http, $options);
+$writer = new Udp\Writer($options);
+$client = new Client($reader, $writer);
+
+$client->mark(...); // Use UDP/IP support
+$client->query("SELECT * FROM my_serie"); // Use HTTP support
 ```
 
-Of course you can always use a DiC (eg `symfony/dependency-injection`) or your service manager in order to create
-a valid client instance.
+Or use only the HTTP
+
+```php
+$reader = new Http\Reader($http, $options);
+$writer = new Http\Writer($http, $options);
+$client = new Client($reader, $writer);
+
+$client->mark(...); // Use HTTP support
+$client->query("SELECT * FROM my_serie"); // Use HTTP support
+```
 
 ### Query InfluxDB
 
 You can query the time series database using the query method.
 
 ```php
-$influx->query('select * from "mine"');
+$client->query('select * from "mine"');
 ```
 
 You can query the database only if the adapter is queryable (implements

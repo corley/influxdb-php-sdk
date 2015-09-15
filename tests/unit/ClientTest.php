@@ -12,8 +12,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 {
     public function testMarkNewMeasurementWithShortSyntax()
     {
-        $mock = $this->prophesize("InfluxDB\\Adapter\\WritableInterface");
-        $mock->send([
+        $reader = $this->prophesize("InfluxDB\\Adapter\\QueryableInterface");
+        $writer = $this->prophesize("InfluxDB\\Adapter\\WritableInterface");
+        $writer->send([
             "points" => [
                 [
                     "measurement" => "tcp.test",
@@ -24,14 +25,15 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ]
         ])->shouldBeCalledTimes(1);
 
-        $object = new Client($mock->reveal());
+        $object = new Client($reader->reveal(), $writer->reveal());
         $object->mark("tcp.test", ["mark" => "element"]);
     }
 
     public function testWriteDirectMessages()
     {
-        $mock = $this->prophesize("InfluxDB\\Adapter\\WritableInterface");
-        $mock->send([
+        $reader = $this->prophesize("InfluxDB\\Adapter\\QueryableInterface");
+        $writer = $this->prophesize("InfluxDB\\Adapter\\WritableInterface");
+        $writer->send([
             "tags" => [
                 "dc" => "eu-west-1",
             ],
@@ -45,7 +47,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ])->shouldBeCalledTimes(1);
-        $object = new Client($mock->reveal());
+        $object = new Client($reader->reveal(), $writer->reveal());
 
         $object->mark([
             "tags" => [
@@ -61,23 +63,5 @@ class ClientTest extends \PHPUnit_Framework_TestCase
                 ],
             ]
         ]);
-    }
-
-    /**
-     * @expectedException BadMethodCallException
-     */
-    public function testNeedWritableInterfaceDuringMark()
-    {
-        $client = new Client(new \stdClass());
-        $client->mark("OK", []);
-    }
-
-    /**
-     * @expectedException BadMethodCallException
-     */
-    public function testNeedQueryableInterfaceDuringQuery()
-    {
-        $client = new Client(new \stdClass());
-        $client->query("OK", []);
     }
 }

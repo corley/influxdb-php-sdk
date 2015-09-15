@@ -5,7 +5,7 @@ use DateTime;
 use InfluxDB\Options;
 use InfluxDB\Adapter\WritableInterface;
 
-abstract class AdapterAbstract implements WritableInterface
+abstract class WriterAbstract implements WritableInterface
 {
     private $options;
 

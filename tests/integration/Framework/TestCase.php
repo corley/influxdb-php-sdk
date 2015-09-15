@@ -2,9 +2,10 @@
 namespace InfluxDB\Integration\Framework;
 
 use InfluxDB\Options;
-use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Client;
+use InfluxDB\Adapter\Http\Writer;
+use InfluxDB\Adapter\Http\Reader;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -15,9 +16,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $options = $this->options = new Options();
         $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
+        $writer = new Writer($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, $options);
 
-        $client = $this->client = new Client($adapter);
+        $client = $this->client = new Client($reader, $writer);
 
         $this->dropAll();
     }

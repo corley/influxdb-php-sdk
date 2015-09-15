@@ -6,14 +6,14 @@ use InfluxDB\Options;
 use InfluxDB\Type\IntType;
 use InfluxDB\Type\FloatType;
 
-class AdapterAbstractTest extends \PHPUnit_Framework_TestCase
+class WriterAbstractTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider getElements
      */
     public function testListToLineValues($message, $result, $options)
     {
-        $helper = $this->getMockBuilder("InfluxDB\\Adapter\\AdapterAbstract")
+        $helper = $this->getMockBuilder("InfluxDB\\Adapter\\WriterAbstract")
             ->setConstructorArgs([$options])
             ->getMockForAbstractClass();
 

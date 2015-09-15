@@ -2,32 +2,35 @@
 
 namespace InfluxDB;
 
-use InfluxDB\Adapter\WritableInterface;
-use InfluxDb\Adapter\QueryableInterface;
+use InfluxDB\Adapter\WritableInterface as Writer;
+use InfluxDb\Adapter\QueryableInterface as Reader;
 
 /**
  * Client to manage request at InfluxDB
  */
 class Client
 {
-    private $adapter;
+    private $reader;
+    private $writer;
 
-    public function __construct($adapter)
+    public function __construct(Reader $reader, Writer $writer)
     {
-        $this->adapter = $adapter;
+        $this->reader = $reader;
+        $this->writer = $writer;
     }
 
-    public function getAdapter()
+    public function getReader()
     {
-        return $this->adapter;
+        return $this->reader;
+    }
+
+    public function getWriter()
+    {
+        return $this->writer;
     }
 
     public function mark($name, array $values = [])
     {
-        if (!($this->getAdapter() instanceOf WritableInterface)) {
-            throw new  \BadMethodCallException("You can write data to database only if the adapter supports it!");
-        }
-
         $data = $name;
         if (!is_array($name)) {
             $data =[];
@@ -35,32 +38,26 @@ class Client
             $data['points'][0]['fields'] = $values;
         }
 
-        return $this->getAdapter()->send($data);
+        return $this->getWriter()->send($data);
     }
 
     public function query($query)
     {
-        if (!($this->getAdapter() instanceOf QueryableInterface)) {
-            throw new  \BadMethodCallException("You can query the database only if the adapter supports it!");
-        }
-
-        $return = $this->getAdapter()->query($query);
-
-        return $return;
+        return $this->getReader()->query($query);
     }
 
     public function getDatabases()
     {
-        return $this->getAdapter()->query("show databases");
+        return $this->query("show databases");
     }
 
     public function createDatabase($name)
     {
-        return $this->getAdapter()->query("create database \"{$name}\"");
+        return $this->query("create database \"{$name}\"");
     }
 
     public function deleteDatabase($name)
     {
-        return $this->getAdapter()->query("drop database \"{$name}\"");
+        return $this->query("drop database \"{$name}\"");
     }
 }

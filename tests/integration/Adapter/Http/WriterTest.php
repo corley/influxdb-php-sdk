@@ -1,15 +1,15 @@
 <?php
-namespace InfluxDB\Integration\Adapter;
+namespace InfluxDB\Integration\Adapter\Http;
 
 use DateTime;
 use DateTimeZone;
 use InfluxDB\Options;
 use InfluxDB\Client;
-use InfluxDB\Adapter\GuzzleAdapter;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Integration\Framework\TestCase as InfluxDBTestCase;
+use InfluxDB\Adapter\Http\Writer;
 
-class GuzzleAdapterTest extends InfluxDBTestCase
+class WriterTest extends InfluxDBTestCase
 {
     /**
      * @dataProvider getDifferentOptions
@@ -19,7 +19,7 @@ class GuzzleAdapterTest extends InfluxDBTestCase
         $this->getClient()->createDatabase($options->getDatabase());
 
         $http = new GuzzleHttpClient();
-        $adapter = new GuzzleAdapter($http, $options);
+        $adapter = new Writer($http, $options);
 
         $adapter->send([
             "points" => [
@@ -52,3 +52,5 @@ class GuzzleAdapterTest extends InfluxDBTestCase
         ];
     }
 }
+
+
