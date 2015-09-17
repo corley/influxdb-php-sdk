@@ -112,8 +112,8 @@ Of course you can mix Udp\Ip and Http adapters in order to write data points
 with UDP/IP protocol but read information using HTTP.
 
 ```php
-$reader = new Http\Reader($http, $options);
-$writer = new Udp\Writer($options);
+$reader = new Http\Reader($http, $httpOptions);
+$writer = new Udp\Writer($udpOptions);
 $client = new Client($reader, $writer);
 
 $client->mark(...); // Use UDP/IP support
