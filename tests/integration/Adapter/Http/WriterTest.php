@@ -47,7 +47,6 @@ class WriterTest extends InfluxDBTestCase
     {
         return [
             [(new Options())->setPort(8086)->setDatabase("tcp.test")],
-            [(new Options())->setPort(8086)->setDatabase("tcp.test")->setForceIntegers(true)],
             [(new Options())->setPort(9000)->setDatabase("proxy.test")->setPrefix("/influxdb")],
         ];
     }

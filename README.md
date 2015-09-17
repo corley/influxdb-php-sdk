@@ -238,26 +238,6 @@ From InfluxDB version `>=0.9.3` integer types are marked with a trailing `i`.
 This library supports data types, in particular PHP types are mapped to influxdb
 in this way by defaults:
 
-| PHP     | InfluxDB |
-|---------|----------|
-| int     | float64  |
-| double  | float64  |
-| boolean | boolean  |
-| string  | string   |
-
-```php
-$client->mark("serie", [
-    "value" => 12,  // Marked as float64
-    "elem" => 12.4, // Marked as float64
-]);
-```
-
-If you want to force integer values, we have to configure a particular option:
-
-```php
-$options->setForceIntegers(true); // disabled by default
-```
-
 And the resulting mapping will be:
 
 | PHP     | InfluxDB |
@@ -273,8 +253,6 @@ $client->mark("serie", [
     "elem" => 12.4, // Marked as float64
 ]);
 ```
-
-**Pay attention! This option: `setForceIntegers` will be removed in the future and we will enable the data type detection by default (BC BREAK)**
 
 ### Force data type
 
