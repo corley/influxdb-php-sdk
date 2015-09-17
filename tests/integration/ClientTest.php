@@ -9,6 +9,9 @@ use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Client;
 use InfluxDB\Integration\Framework\TestCase;
+use InfluxDB\Adapter\Udp\Writer as UdpWriter;
+use InfluxDB\Adapter\Http\Writer;
+use InfluxDB\Adapter\Http\Reader;
 
 class ClientTest extends TestCase
 {
@@ -26,8 +29,9 @@ class ClientTest extends TestCase
         $options->setDatabase("tcp.test");
 
         $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
-        $client = new Client($adapter);
+        $writer = new Writer($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
 
         $client->mark("vm", ["mark" => "element"]);
 
@@ -42,8 +46,9 @@ class ClientTest extends TestCase
         $options->setDatabase("tcp.test");
 
         $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
-        $client = new Client($adapter);
+        $writer = new Writer($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
 
         $client->mark([
             "database" => "tcp.test",
@@ -69,8 +74,9 @@ class ClientTest extends TestCase
     {
         $options = new Options();
         $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
-        $client = new Client($adapter);
+        $writer = new Writer($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
 
         $databases = $client->getDatabases();
 
@@ -81,9 +87,9 @@ class ClientTest extends TestCase
     {
         $options = new Options();
         $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
-
-        $client = new Client($adapter);
+        $writer = new Writer($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
 
         $client->createDatabase("walter");
 
@@ -96,9 +102,9 @@ class ClientTest extends TestCase
     {
         $options = new Options();
         $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
-
-        $client = new Client($adapter);
+        $writer = new Writer($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
 
         $client->createDatabase("walter");
         $this->assertDatabasesCount(3);
@@ -124,9 +130,10 @@ class ClientTest extends TestCase
         $options->setUsername('root');
         $options->setPassword('root');
 
-        $httpAdapter = new \InfluxDB\Adapter\UdpAdapter($options);
-
-        $client = new \InfluxDB\Client($httpAdapter);
+        $guzzleHttp = new GuzzleHttpClient();
+        $writer = new UdpWriter($options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
         $client->mark("udp.test", ["mark" => "element"]);
     }
 
@@ -141,10 +148,12 @@ class ClientTest extends TestCase
         $options->setPassword("nothing");
         $options->setPort(64071); //This is a wrong port
 
-        $adapter = new UdpAdapter($options);
-        $object = new Client($adapter);
+        $guzzleHttp = new GuzzleHttpClient();
+        $writer = new UdpWriter($options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
 
-        $object->mark("udp.test", ["mark" => "element"]);
+        $client->mark("udp.test", ["mark" => "element"]);
     }
 
     /**
@@ -158,9 +167,11 @@ class ClientTest extends TestCase
         $options->setPassword("nothing");
         $options->setPort(15984);
 
-        $adapter = new UdpAdapter($options);
-        $object = new Client($adapter);
+        $guzzleHttp = new GuzzleHttpClient();
+        $writer = new UdpWriter($options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
 
-        $object->mark("udp.test", ["mark" => "element"]);
+        $client->mark("udp.test", ["mark" => "element"]);
     }
 }

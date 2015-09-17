@@ -1,10 +1,11 @@
 <?php
-namespace InfluxDB\Adapter;
+namespace InfluxDB\Adapter\Http;
 
-use GuzzleHttp\Client;
 use InfluxDB\Options;
+use GuzzleHttp\Client;
+use InfluxDB\Adapter\WriterAbstract;
 
-class GuzzleAdapter extends AdapterAbstract implements QueryableInterface
+class Writer extends WriterAbstract
 {
     private $httpClient;
 
@@ -30,33 +31,9 @@ class GuzzleAdapter extends AdapterAbstract implements QueryableInterface
         return $this->httpClient->post($endpoint, $httpMessage);
     }
 
-    public function query($query)
-    {
-        $options = [
-            "auth" => [$this->getOptions()->getUsername(), $this->getOptions()->getPassword()],
-            'query' => [
-                "q" => $query,
-                "db" => $this->getOptions()->getDatabase(),
-            ]
-        ];
-
-        return $this->get($options);
-    }
-
-    private function get(array $httpMessage)
-    {
-        $endpoint = $this->getHttpQueryEndpoint();
-        return json_decode($this->httpClient->get($endpoint, $httpMessage)->getBody(), true);
-    }
-
     protected function getHttpSeriesEndpoint()
     {
         return $this->getHttpEndpoint("write");
-    }
-
-    protected function getHttpQueryEndpoint()
-    {
-        return $this->getHttpEndpoint("query");
     }
 
     private function getHttpEndpoint($operation)

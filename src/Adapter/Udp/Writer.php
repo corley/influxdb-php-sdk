@@ -1,7 +1,9 @@
 <?php
-namespace InfluxDB\Adapter;
+namespace InfluxDB\Adapter\Udp;
 
-class UdpAdapter extends AdapterAbstract
+use InfluxDB\Adapter\WriterAbstract;
+
+class Writer extends WriterAbstract
 {
     public function send(array $message)
     {

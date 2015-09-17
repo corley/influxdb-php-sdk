@@ -1,5 +1,5 @@
 <?php
-namespace InfluxDB\Adapter;
+namespace InfluxDB\Adapter\Udp;
 
 use DateTime;
 use DateTimeZone;
@@ -9,14 +9,14 @@ use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use InfluxDB\Client;
 use Prophecy\Argument;
 
-class UdpAdapterTest extends \PHPUnit_Framework_TestCase
+class WriterTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider getMessages
      */
     public function testRewriteMessages($input, $response)
     {
-        $object = $this->getMockBuilder("InfluxDB\Adapter\UdpAdapter")
+        $object = $this->getMockBuilder("InfluxDB\Adapter\Udp\Writer")
             ->setConstructorArgs([new Options()])
             ->setMethods(["write"])
             ->getMock();
@@ -120,7 +120,7 @@ EOF
     public function testUdpIpWriteDataWillBeConvertedAsLineProtocol()
     {
         $options = (new Options())->setDatabase("test");
-        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\UdpAdapter")
+        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write", "generateTimeInNanoSeconds"])
             ->getMock();
@@ -151,7 +151,7 @@ EOF
     public function testSendMultipleMeasurementWithUdpIp()
     {
         $options = (new Options())->setDatabase("test");
-        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\UdpAdapter")
+        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write", "generateTimeInNanoSeconds"])
             ->getMock();
@@ -194,7 +194,7 @@ EOF
         $options = (new Options())
             ->setDatabase("test")
             ->setTags(["dc" => "eu-west"]);
-        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\UdpAdapter")
+        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write"])
             ->getMock();
@@ -223,7 +223,7 @@ EOF
         $options = (new Options())
             ->setDatabase("test")
             ->setTags(["dc" => "eu-west"]);
-        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\UdpAdapter")
+        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write", "generateTimeInNanoSeconds"])
             ->getMock();
@@ -262,7 +262,7 @@ EOF
         $options = (new Options())
             ->setDatabase("test")
             ->setTags(["dc" => "eu-west"]);
-        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\UdpAdapter")
+        $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write", "generateTimeInNanoSeconds"])
             ->getMock();
@@ -304,7 +304,7 @@ EOF
         $options = new Options();
         $options->setForceIntegers(true);
 
-        $object = $this->getMockBuilder("InfluxDB\Adapter\UdpAdapter")
+        $object = $this->getMockBuilder("InfluxDB\Adapter\Udp\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write"])
             ->getMock();

@@ -1,16 +1,16 @@
 <?php
-namespace InfluxDB\Integration\Adapter;
+namespace InfluxDB\Integration\Adapter\Udp;
 
 use InfluxDB\Integration\Framework\TestCase as InfluxDBTestCase;
-use InfluxDB\Adapter\UdpAdapter;
 use InfluxDB\Options;
+use InfluxDB\Adapter\Udp\Writer;
 
-class UdpAdapterTest extends InfluxDBTestCase
+class WriterTest extends InfluxDBTestCase
 {
     public function testWriteSimplePointsUsingDirectWrite()
     {
         $options = (new Options())->setPort(4444);
-        $adapter = new UdpAdapter($options);
+        $adapter = new Writer($options);
 
         $this->getClient()->createDatabase("udp.test");
 
@@ -28,7 +28,7 @@ class UdpAdapterTest extends InfluxDBTestCase
      */
     public function testWriteSimplePointsUsingSendMethod(Options $options)
     {
-        $adapter = new UdpAdapter($options);
+        $adapter = new Writer($options);
 
         $this->getClient()->createDatabase($options->getDatabase());
 

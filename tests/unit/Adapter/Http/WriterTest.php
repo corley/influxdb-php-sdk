@@ -1,17 +1,15 @@
 <?php
-namespace InfluxDB\Adater;
+namespace InfluxDB\Adapter\Http;
 
 use DateTime;
 use DateTimeZone;
 use InfluxDB\Options;
 use GuzzleHttp\Client as GuzzleHttpClient;
-use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use InfluxDB\Client;
 use Prophecy\Argument;
 
-class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
+class WriterTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @group tcp
      * @group proxy
@@ -20,7 +18,7 @@ class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
     public function testWriteEndpointGeneration($final, $options)
     {
         $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
+        $adapter = new Writer($guzzleHttp, $options);
 
         $reflection = new \ReflectionClass(get_class($adapter));
         $method = $reflection->getMethod("getHttpSeriesEndpoint");
@@ -39,34 +37,6 @@ class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @group tcp
-     * @group proxy
-     * @dataProvider getQueryEndpoints
-     */
-    public function testQueryEndpointGeneration($final, $options)
-    {
-        $guzzleHttp = new GuzzleHttpClient();
-        $adapter = new InfluxHttpAdapter($guzzleHttp, $options);
-
-        $reflection = new \ReflectionClass(get_class($adapter));
-        $method = $reflection->getMethod("getHttpQueryEndpoint");
-        $method->setAccessible(true);
-
-        $endpoint = $method->invokeArgs($adapter, []);
-        $this->assertEquals($final, $endpoint);
-    }
-
-    public function getQueryEndpoints()
-    {
-        return [
-            ["http://localhost:9000/query", (new Options())->setHost("localhost")->setPort(9000)],
-            ["https://localhost:9000/query", (new Options())->setHost("localhost")->setPort(9000)->setProtocol("https")],
-            ["http://localhost:9000/influxdb/query", (new Options())->setHost("localhost")->setPort(9000)->setPrefix("/influxdb")],
-        ];
-    }
-
-
     public function testMergeWithDefaultOptions()
     {
         $options = new Options();
@@ -80,7 +50,7 @@ class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
             ],
             "body" => null,
         ])->shouldBeCalledTimes(1);
-        $adapter = new InfluxHttpAdapter($httpClient->reveal(), $options);
+        $adapter = new Writer($httpClient->reveal(), $options);
         $adapter->send([]);
     }
 
@@ -95,7 +65,7 @@ class GuzzleAdapterTest extends \PHPUnit_Framework_TestCase
             $this->assertRegExp($regexp, $body);
             return true;
         }))->shouldBeCalledTimes(1);
-        $adapter = new InfluxHttpAdapter($guzzleHttp->reveal(), $options);
+        $adapter = new Writer($guzzleHttp->reveal(), $options);
 
         $adapter->send($send);
     }
