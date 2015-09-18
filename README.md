@@ -139,9 +139,6 @@ You can query the time series database using the query method.
 $client->query('select * from "mine"');
 ```
 
-You can query the database only if the adapter is queryable (implements
-`QueryableInterface`), actually `GuzzleAdapter`.
-
 The adapter returns the json decoded body of the InfluxDB response, something
 like:
 
@@ -193,9 +190,6 @@ $client->createDatabase("my-name"); // create a new database with name "my.name"
 $client->deleteDatabase("my-name"); // delete an existing database with name "my.name"
 ```
 
-Actually only queryable adapters can handle databases (implements the
-`QueryableInterface`)
-
 ## Global tags and retention policy
 
 You can set a set of default tags, that the SDK will add to your metrics:
@@ -222,7 +216,7 @@ In that way the SDK use that policy instead of `default` policy.
 
 If you proxy your InfluxDB typically you have a prefix in your endpoints.
 
-```
+```php
 $option->setHost("proxy.influxdb.tld");
 $option->setPort(80);
 $option->setPrefix("/influxdb"); // your prefix is: /influxdb
@@ -297,7 +291,7 @@ https://github.com/corley/dbal-influxdb
 
 Thanks to Doctrine DBAL (Abstract Layer) you can use the query builder
 
-```
+```php
 $qb = $conn->createQueryBuilder();
 
 $qb->select("*")
