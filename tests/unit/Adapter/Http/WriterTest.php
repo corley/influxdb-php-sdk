@@ -244,7 +244,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
                 '/tcp.test,dc=us-west,region=us mark="element" \d+\ntcp.test,dc=us-west,region=us mark="element2" \d+$/i'
             ],
             [
-                (new Options())->setDatabase("db")->setForceIntegers(true),
+                (new Options())->setDatabase("db"),
                 [
                     "points" => [
                         [

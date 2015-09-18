@@ -104,7 +104,7 @@ abstract class WriterAbstract implements WritableInterface
 
     protected function convertInteger($value)
     {
-        return (($this->getOptions()->getForceIntegers()) ? "{$value}i" : $value);
+        return "{$value}i" ;
     }
 
     protected function convertDouble($value)

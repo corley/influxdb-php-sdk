@@ -37,7 +37,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
                         [
                             "measurement" => "cpu",
                             "fields" => [
-                                "value" => 1,
+                                "value" => 1.,
                             ],
                         ],
                     ],
@@ -51,7 +51,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
                         [
                             "measurement" => "cpu",
                             "fields" => [
-                                "value" => 1,
+                                "value" => 1.,
                                 "string" => "escape",
                             ],
                         ],
@@ -74,7 +74,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
                             "measurement" => "cpu",
                             "fields" => [
                                 "cpu" => 18.12,
-                                "free" => 712432,
+                                "free" => 712432.,
                             ],
                         ],
                     ],
@@ -101,7 +101,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
                         [
                             "measurement" => "mem",
                             "fields" => [
-                                "free" => 712432,
+                                "free" => 712432.,
                             ],
                         ],
                     ],
@@ -173,7 +173,7 @@ EOF
                 [
                     "measurement" => "mem",
                     "fields" => [
-                        "free" => 712423,
+                        "free" => 712423.,
                     ],
                 ],
                 [
@@ -208,7 +208,7 @@ EOF
                 [
                     "measurement" => "mem",
                     "fields" => [
-                        "free" => 712423,
+                        "free" => 712423.,
                     ],
                 ],
             ]
@@ -247,7 +247,7 @@ EOF
                 [
                     "measurement" => "mem",
                     "fields" => [
-                        "free" => 712423,
+                        "free" => 712423.,
                     ],
                 ],
             ]
@@ -289,7 +289,7 @@ EOF
                         "location" => "ireland",
                     ],
                     "fields" => [
-                        "free" => 712423,
+                        "free" => 712423.,
                     ],
                 ],
             ]
@@ -297,12 +297,11 @@ EOF
     }
 
     /**
-     * @dataProvider getMessagesWithForceIntegers
+     * @dataProvider getMessagesWithIntegers
      */
-    public function testForceIntegers($input, $response)
+    public function testWithIntegers($input, $response)
     {
         $options = new Options();
-        $options->setForceIntegers(true);
 
         $object = $this->getMockBuilder("InfluxDB\Adapter\Udp\Writer")
             ->setConstructorArgs([$options])
@@ -315,7 +314,7 @@ EOF
         $object->send($input);
     }
 
-    public function getMessagesWithForceIntegers()
+    public function getMessagesWithIntegers()
     {
         return [
             [

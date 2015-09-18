@@ -61,7 +61,6 @@ class WriterTest extends InfluxDBTestCase
     {
         return [
             [(new Options())->setPort(4444)->setDatabase("udp.test")],
-            [(new Options())->setPort(4444)->setDatabase("udp.test")->setForceIntegers(true)],
         ];
     }
 }

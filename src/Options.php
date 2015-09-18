@@ -2,9 +2,6 @@
 
 namespace InfluxDB;
 
-/**
- * Manage in the best way InfluxDB Client Configuration
- */
 class Options
 {
     private $host;
@@ -16,7 +13,6 @@ class Options
     private $retentionPolicy;
     private $tags;
     private $prefix;
-    private $forceIntegers;
 
     public function __construct()
     {
@@ -26,21 +22,9 @@ class Options
         $this->setPassword("root");
         $this->setProtocol("http");
         $this->setPrefix("");
-        $this->setForceIntegers(false);
 
         $this->setRetentionPolicy("default");
         $this->setTags([]);
-    }
-
-    public function getForceIntegers()
-    {
-        return $this->forceIntegers;
-    }
-
-    public function setForceIntegers($forceIntegers)
-    {
-        $this->forceIntegers = $forceIntegers;
-        return $this;
     }
 
     public function getPrefix()
@@ -76,9 +60,6 @@ class Options
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getProtocol()
     {
         return $this->protocol;
