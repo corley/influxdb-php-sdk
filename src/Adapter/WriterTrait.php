@@ -2,13 +2,10 @@
 namespace InfluxDB\Adapter;
 
 use DateTime;
-use InfluxDB\Adapter\WritableInterface;
 
-abstract class WriterAbstract implements WritableInterface
+trait WriterTrait
 {
-    abstract public function send(array $message);
-
-    protected function messageToLineProtocol(array $message, array $tags = [])
+    public function messageToLineProtocol(array $message, array $tags = [])
     {
         if (!array_key_exists("points", $message)) {
             return;
