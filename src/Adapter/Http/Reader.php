@@ -1,7 +1,7 @@
 <?php
 namespace InfluxDB\Adapter\Http;
 
-use InfluxDB\Options;
+use InfluxDB\Adapter\Http\Options;
 use GuzzleHttp\Client;
 use InfluxDB\Adapter\QueryableInterface;
 

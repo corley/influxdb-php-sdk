@@ -2,12 +2,24 @@
 namespace InfluxDB\Adapter\Udp;
 
 use InfluxDB\Adapter\WriterAbstract;
+use InfluxDB\Adapter\Udp\Options;
 
 class Writer extends WriterAbstract
 {
+    private $options;
+
+    public function __construct(Options $options)
+    {
+        $this->options = $options;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
     public function send(array $message)
     {
-        $message = $this->messageToLineProtocol($message);
+        $message = $this->messageToLineProtocol($message, $this->getOptions()->getTags());
 
         $this->write($message);
     }

@@ -3,7 +3,7 @@ namespace InfluxDB\Adapter\Udp;
 
 use DateTime;
 use DateTimeZone;
-use InfluxDB\Options;
+use InfluxDB\Adapter\Udp\Options;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use InfluxDB\Client;
@@ -119,7 +119,7 @@ EOF
      */
     public function testUdpIpWriteDataWillBeConvertedAsLineProtocol()
     {
-        $options = (new Options())->setDatabase("test");
+        $options = new Options();
         $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write", "generateTimeInNanoSeconds"])
@@ -150,7 +150,7 @@ EOF
      */
     public function testSendMultipleMeasurementWithUdpIp()
     {
-        $options = (new Options())->setDatabase("test");
+        $options = new Options();
         $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write", "generateTimeInNanoSeconds"])
@@ -191,9 +191,7 @@ EOF
      */
     public function testFillWithGlobalTags()
     {
-        $options = (new Options())
-            ->setDatabase("test")
-            ->setTags(["dc" => "eu-west"]);
+        $options = (new Options())->setTags(["dc" => "eu-west"]);
         $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
             ->setMethods(["write"])
@@ -221,7 +219,6 @@ EOF
     public function testMergeGlobalTags()
     {
         $options = (new Options())
-            ->setDatabase("test")
             ->setTags(["dc" => "eu-west"]);
         $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])
@@ -260,7 +257,6 @@ EOF
     public function testMergeFullTagsPositions()
     {
         $options = (new Options())
-            ->setDatabase("test")
             ->setTags(["dc" => "eu-west"]);
         $adapter = $this->getMockBuilder("InfluxDB\\Adapter\\Udp\\Writer")
             ->setConstructorArgs([$options])

@@ -1,15 +1,15 @@
 <?php
 namespace InfluxDB\Integration\Adapter\Udp;
 
-use InfluxDB\Integration\Framework\TestCase as InfluxDBTestCase;
-use InfluxDB\Options;
 use InfluxDB\Adapter\Udp\Writer;
+use InfluxDB\Adapter\Udp\Options as UdpOptions;
+use InfluxDB\Integration\Framework\TestCase as InfluxDBTestCase;
 
 class WriterTest extends InfluxDBTestCase
 {
     public function testWriteSimplePointsUsingDirectWrite()
     {
-        $options = (new Options())->setPort(4444);
+        $options = (new UdpOptions())->setPort(4444);
         $adapter = new Writer($options);
 
         $this->getClient()->createDatabase("udp.test");
@@ -26,11 +26,11 @@ class WriterTest extends InfluxDBTestCase
     /**
      * @dataProvider getDifferentOptions
      */
-    public function testWriteSimplePointsUsingSendMethod(Options $options)
+    public function testWriteSimplePointsUsingSendMethod(UdpOptions $options)
     {
         $adapter = new Writer($options);
 
-        $this->getClient()->createDatabase($options->getDatabase());
+        $this->getClient()->createDatabase("udp.test");
 
         $adapter->send([
             "retentionPolicy" => "default",
@@ -49,18 +49,18 @@ class WriterTest extends InfluxDBTestCase
 
         sleep(2);
 
-        $this->assertSerieExists($options->getDatabase(), "mem");
-        $this->assertSerieCount($options->getDatabase(), "mem", 1);
-        $this->assertValueExistsInSerie($options->getDatabase(), "mem", "value", 1233);
-        $this->assertValueExistsInSerie($options->getDatabase(), "mem", "value_float", 1233.34);
-        $this->assertValueExistsInSerie($options->getDatabase(), "mem", "with_string", "this is a string");
-        $this->assertValueExistsInSerie($options->getDatabase(), "mem", "with_bool", true);
+        $this->assertSerieExists("udp.test", "mem");
+        $this->assertSerieCount("udp.test", "mem", 1);
+        $this->assertValueExistsInSerie("udp.test", "mem", "value", 1233);
+        $this->assertValueExistsInSerie("udp.test", "mem", "value_float", 1233.34);
+        $this->assertValueExistsInSerie("udp.test", "mem", "with_string", "this is a string");
+        $this->assertValueExistsInSerie("udp.test", "mem", "with_bool", true);
     }
 
     public function getDifferentOptions()
     {
         return [
-            [(new Options())->setPort(4444)->setDatabase("udp.test")],
+            [(new UdpOptions())->setPort(4444)],
         ];
     }
 }

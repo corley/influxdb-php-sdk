@@ -84,11 +84,14 @@ In order to use the UDP/IP adapter your must have PHP compiled with the `sockets
 ```php
 $reader = ...
 
-$options = new Options();
+$options = new Udp\Options();
 $writer = new Udp\Writer($options);
 
 $client = new Client($reader, $writer);
 ```
+
+_UDP/IP option set have only `host` and `port` properties you configure
+database and retention policies directly in your InfluxDB configuration_
 
 ### Using HTTP Adapters
 
@@ -100,7 +103,7 @@ $http = new \GuzzleHttp\Client();
 
 $writer = ...
 
-$options = new Options();
+$options = new Http\Options();
 $reader = new Http\Reader($http, $options);
 
 $client = new Client($reader, $writer);
@@ -195,7 +198,7 @@ $client->deleteDatabase("my-name"); // delete an existing database with name "my
 You can set a set of default tags, that the SDK will add to your metrics:
 
 ```php
-$options = new Options();
+$options = new Http\Options();
 $options->setTags([
     "env" => "prod",
     "region" => "eu-west-1",

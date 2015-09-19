@@ -3,7 +3,7 @@ namespace InfluxDB\Integration;
 
 use DateTime;
 use DateTimeZone;
-use InfluxDB\Options;
+use InfluxDB\Adapter\Http\Options;
 use InfluxDB\Adapter\UdpAdapter;
 use InfluxDB\Adapter\GuzzleAdapter as InfluxHttpAdapter;
 use GuzzleHttp\Client as GuzzleHttpClient;
@@ -121,18 +121,15 @@ class ClientTest extends TestCase
      */
     public function testReplicateIssue27()
     {
-        $options = new \InfluxDB\Options();
+        $options = new \InfluxDB\Adapter\Udp\Options();
 
         // Configure options
         $options->setHost('172.16.1.182');
         $options->setPort(4444);
-        $options->setDatabase('...');
-        $options->setUsername('root');
-        $options->setPassword('root');
 
         $guzzleHttp = new GuzzleHttpClient();
         $writer = new UdpWriter($options);
-        $reader = new Reader($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, new Options());
         $client = new Client($reader, $writer);
         $client->mark("udp.test", ["mark" => "element"]);
     }
@@ -142,15 +139,13 @@ class ClientTest extends TestCase
      */
     public function testWriteUDPPackagesToNoOne()
     {
-        $options = new Options();
+        $options = new \InfluxDB\Adapter\Udp\Options();
         $options->setHost("127.0.0.1");
-        $options->setUsername("nothing");
-        $options->setPassword("nothing");
         $options->setPort(64071); //This is a wrong port
 
         $guzzleHttp = new GuzzleHttpClient();
         $writer = new UdpWriter($options);
-        $reader = new Reader($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, new Options());
         $client = new Client($reader, $writer);
 
         $client->mark("udp.test", ["mark" => "element"]);
@@ -161,15 +156,13 @@ class ClientTest extends TestCase
      */
     public function testWriteUDPPackagesToInvalidHostname()
     {
-        $options = new Options();
+        $options = new \InfluxDB\Adapter\Udp\Options();
         $options->setHost("www.test-invalid.this-is-not-a-tld");
-        $options->setUsername("nothing");
-        $options->setPassword("nothing");
         $options->setPort(15984);
 
         $guzzleHttp = new GuzzleHttpClient();
         $writer = new UdpWriter($options);
-        $reader = new Reader($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, new Options());
         $client = new Client($reader, $writer);
 
         $client->mark("udp.test", ["mark" => "element"]);

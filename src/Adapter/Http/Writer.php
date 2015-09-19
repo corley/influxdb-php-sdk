@@ -1,19 +1,24 @@
 <?php
 namespace InfluxDB\Adapter\Http;
 
-use InfluxDB\Options;
 use GuzzleHttp\Client;
+use InfluxDB\Adapter\Http\Options;
 use InfluxDB\Adapter\WriterAbstract;
 
 class Writer extends WriterAbstract
 {
     private $httpClient;
+    private $options;
 
     public function __construct(Client $httpClient, Options $options)
     {
-        parent::__construct($options);
-
         $this->httpClient = $httpClient;
+        $this->options = $options;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     public function send(array $message)
@@ -24,7 +29,7 @@ class Writer extends WriterAbstract
                 "db" => $this->getOptions()->getDatabase(),
                 "retentionPolicy" => $this->getOptions()->getRetentionPolicy(),
             ],
-            "body" => $this->messageToLineProtocol($message)
+            "body" => $this->messageToLineProtocol($message, $this->getOptions()->getTags())
         ];
 
         $endpoint = $this->getHttpSeriesEndpoint();

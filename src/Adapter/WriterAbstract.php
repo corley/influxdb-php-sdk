@@ -2,33 +2,20 @@
 namespace InfluxDB\Adapter;
 
 use DateTime;
-use InfluxDB\Options;
 use InfluxDB\Adapter\WritableInterface;
 
 abstract class WriterAbstract implements WritableInterface
 {
-    private $options;
-
-    public function __construct(Options $options)
-    {
-        $this->options = $options;
-    }
-
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
     abstract public function send(array $message);
 
-    protected function messageToLineProtocol(array $message)
+    protected function messageToLineProtocol(array $message, array $tags = [])
     {
         if (!array_key_exists("points", $message)) {
             return;
         }
 
         $message = $this->prepareMessageSection($message);
-        $message["tags"] = array_replace_recursive($this->getOptions()->getTags(), $message["tags"]);
+        $message["tags"] = array_replace_recursive($tags, $message["tags"]);
 
         $lines = [];
         foreach ($message["points"] as $point) {

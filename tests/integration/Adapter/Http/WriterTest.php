@@ -3,8 +3,8 @@ namespace InfluxDB\Integration\Adapter\Http;
 
 use DateTime;
 use DateTimeZone;
-use InfluxDB\Options;
 use InfluxDB\Client;
+use InfluxDB\Adapter\Http\Options;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Integration\Framework\TestCase as InfluxDBTestCase;
 use InfluxDB\Adapter\Http\Writer;
