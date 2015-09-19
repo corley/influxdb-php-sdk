@@ -2,11 +2,14 @@
 namespace InfluxDB\Adapter\Http;
 
 use GuzzleHttp\Client;
+use InfluxDB\Adapter\WriterTrait;
 use InfluxDB\Adapter\Http\Options;
-use InfluxDB\Adapter\WriterAbstract;
+use InfluxDB\Adapter\WritableInterface;
 
-class Writer extends WriterAbstract
+class Writer implements WritableInterface
 {
+    use WriterTrait;
+
     private $httpClient;
     private $options;
 

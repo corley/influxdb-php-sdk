@@ -5,15 +5,15 @@ use ReflectionMethod;
 use InfluxDB\Type\IntType;
 use InfluxDB\Type\FloatType;
 
-class WriterAbstractTest extends \PHPUnit_Framework_TestCase
+class WriterTraitTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider getElements
      */
     public function testListToLineValues($message, $result)
     {
-        $helper = $this->getMockBuilder("InfluxDB\\Adapter\\WriterAbstract")
-            ->getMockForAbstractClass();
+        $helper = $this->getMockBuilder("InfluxDB\\Adapter\\WriterTrait")
+            ->getMockForTrait();
 
         $method = new ReflectionMethod(get_class($helper), "pointsToString");
         $method->setAccessible(true);

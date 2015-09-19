@@ -1,11 +1,14 @@
 <?php
 namespace InfluxDB\Adapter\Udp;
 
-use InfluxDB\Adapter\WriterAbstract;
+use InfluxDB\Adapter\WriterTrait;
 use InfluxDB\Adapter\Udp\Options;
+use InfluxDB\Adapter\WritableInterface;
 
-class Writer extends WriterAbstract
+class Writer implements WritableInterface
 {
+    use WriterTrait;
+
     private $options;
 
     public function __construct(Options $options)
