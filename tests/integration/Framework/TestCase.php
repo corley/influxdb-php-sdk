@@ -1,9 +1,9 @@
 <?php
 namespace InfluxDB\Integration\Framework;
 
-use InfluxDB\Options;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Client;
+use InfluxDB\Adapter\Http\Options as HttpOptions;
 use InfluxDB\Adapter\Http\Writer;
 use InfluxDB\Adapter\Http\Reader;
 
@@ -14,7 +14,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $options = $this->options = new Options();
+        $options = $this->options = new HttpOptions();
         $guzzleHttp = new GuzzleHttpClient();
         $writer = new Writer($guzzleHttp, $options);
         $reader = new Reader($guzzleHttp, $options);

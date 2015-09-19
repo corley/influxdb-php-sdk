@@ -3,7 +3,7 @@ namespace InfluxDB\Adapter\Http;
 
 use DateTime;
 use DateTimeZone;
-use InfluxDB\Options;
+use InfluxDB\Adapter\Http\Options;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Client;
 use Prophecy\Argument;

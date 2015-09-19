@@ -1,6 +1,5 @@
 <?php
-
-namespace InfluxDB;
+namespace InfluxDB\Adapter\Http;
 
 class Options
 {

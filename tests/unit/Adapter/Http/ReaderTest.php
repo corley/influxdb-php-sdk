@@ -3,10 +3,10 @@ namespace InfluxDB\Adapter\Http;
 
 use DateTime;
 use DateTimeZone;
-use InfluxDB\Options;
-use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Client;
 use Prophecy\Argument;
+use InfluxDB\Adapter\Http\Options;
+use GuzzleHttp\Client as GuzzleHttpClient;
 
 class ReaderTest extends \PHPUnit_Framework_TestCase
 {

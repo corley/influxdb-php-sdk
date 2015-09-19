@@ -2,7 +2,6 @@
 namespace InfluxDB\Adapter;
 
 use ReflectionMethod;
-use InfluxDB\Options;
 use InfluxDB\Type\IntType;
 use InfluxDB\Type\FloatType;
 
@@ -11,10 +10,9 @@ class WriterAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getElements
      */
-    public function testListToLineValues($message, $result, $options)
+    public function testListToLineValues($message, $result)
     {
         $helper = $this->getMockBuilder("InfluxDB\\Adapter\\WriterAbstract")
-            ->setConstructorArgs([$options])
             ->getMockForAbstractClass();
 
         $method = new ReflectionMethod(get_class($helper), "pointsToString");
@@ -26,24 +24,24 @@ class WriterAbstractTest extends \PHPUnit_Framework_TestCase
     public function getElements()
     {
         return [
-            [["one" => "two"], "one=\"two\"", new Options()],
-            [["one" => "two", "three" => "four"], "one=\"two\",three=\"four\"", new Options()],
-            [["one" => true, "three" => false], "one=true,three=false", new Options()],
-            [["one" => true, "three" => 0., "four" => 1.], "one=true,three=0,four=1", new Options()],
-            [["one" => true, "three" => false], "one=true,three=false", new Options()],
-            [["one" => true, "three" => 0, "four" => 1], "one=true,three=0i,four=1i", new Options()],
-            [["one" => 12, "three" => 14], "one=12i,three=14i", (new Options())],
-            [["one" => 12.1, "three" => 14], "one=12.1,three=14i", (new Options())],
-            [["one" => 12., "three" => 14], "one=12,three=14i", (new Options())],
-            [["one" => (double)12, "three" => 14], "one=12,three=14i", (new Options())],
-            [["one" => (double)12, "three" => (double)14], "one=12,three=14", (new Options())],
-            [["one" => (double)"12", "three" => (int)"14"], "one=12,three=14i", (new Options())],
-            [["one" => (double)"12", "three" => new IntType("14")], "one=12,three=14i", (new Options())],
-            [["one" => (double)"12", "three" => new IntType(14.12)], "one=12,three=14i", (new Options())],
-            [["one" => (double)"12", "three" => new IntType(14)], "one=12,three=14i", (new Options())],
-            [["one" => (double)"12", "three" => new FloatType(14)], "one=12,three=14", (new Options())],
-            [["one" => (double)"12", "three" => new FloatType("14")], "one=12,three=14", (new Options())],
-            [["one" => (double)"12", "three" => new FloatType("14.123")], "one=12,three=14.123", (new Options())],
+            [["one" => "two"], "one=\"two\""],
+            [["one" => "two", "three" => "four"], "one=\"two\",three=\"four\""],
+            [["one" => true, "three" => false], "one=true,three=false"],
+            [["one" => true, "three" => 0., "four" => 1.], "one=true,three=0,four=1"],
+            [["one" => true, "three" => false], "one=true,three=false"],
+            [["one" => true, "three" => 0, "four" => 1], "one=true,three=0i,four=1i"],
+            [["one" => 12, "three" => 14], "one=12i,three=14i"],
+            [["one" => 12.1, "three" => 14], "one=12.1,three=14i"],
+            [["one" => 12., "three" => 14], "one=12,three=14i"],
+            [["one" => (double)12, "three" => 14], "one=12,three=14i"],
+            [["one" => (double)12, "three" => (double)14], "one=12,three=14"],
+            [["one" => (double)"12", "three" => (int)"14"], "one=12,three=14i"],
+            [["one" => (double)"12", "three" => new IntType("14")], "one=12,three=14i"],
+            [["one" => (double)"12", "three" => new IntType(14.12)], "one=12,three=14i"],
+            [["one" => (double)"12", "three" => new IntType(14)], "one=12,three=14i"],
+            [["one" => (double)"12", "three" => new FloatType(14)], "one=12,three=14"],
+            [["one" => (double)"12", "three" => new FloatType("14")], "one=12,three=14"],
+            [["one" => (double)"12", "three" => new FloatType("14.123")], "one=12,three=14.123"],
         ];
     }
 }
