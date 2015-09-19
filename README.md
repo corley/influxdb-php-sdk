@@ -28,7 +28,7 @@ Or add to your `composer.json` file
 ```json
 {
   "require": {
-    "corley/influxdb-sdk": ">=0.4"
+    "corley/influxdb-sdk": "0.7.*"
   }
 }
 ```
