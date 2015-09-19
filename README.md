@@ -1,8 +1,8 @@
 # InfluxDB PHP SDK
 
-[![Build Status](https://travis-ci.org/corley/influxdb-php-sdk.svg?branch=master)](https://travis-ci.org/corley/influxdb-php-sdk)
-[![Code Coverage](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/?branch=master)
+[![Build Status](https://travis-ci.org/corley/influxdb-php-sdk.svg?branch=v0.7)](https://travis-ci.org/corley/influxdb-php-sdk)
+[![Code Coverage](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/badges/coverage.png?b=v0.7)](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/?branch=v0.7)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/badges/quality-score.png?b=v0.7)](https://scrutinizer-ci.com/g/corley/influxdb-php-sdk/?branch=v0.7)
 [![Latest Stable Version](https://poser.pugx.org/corley/influxdb-sdk/v/stable)](https://packagist.org/packages/corley/influxdb-sdk)
 [![License](https://poser.pugx.org/corley/influxdb-sdk/license)](https://packagist.org/packages/corley/influxdb-sdk)
 
