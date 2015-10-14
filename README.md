@@ -161,7 +161,7 @@ array(1) {
 ```
 
 If you prefere a more simple response than the original one, you can use
-[`corley/influxdb-http-handlers`](https://github.com/wdalmut/influxdb-http-handlers)
+[`corley/influxdb-http-handlers`](https://github.com/corley/influxdb-http-handlers)
 that convert, the original InfluxDB response, in a more simple response, something like:
 
 ```php
