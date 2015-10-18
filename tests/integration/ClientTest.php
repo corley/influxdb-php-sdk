@@ -70,49 +70,6 @@ class ClientTest extends TestCase
         $this->assertValueExistsInSerie("tcp.test", "tt", "mem", 2);
     }
 
-    public function testListActiveDatabases()
-    {
-        $options = new Options();
-        $guzzleHttp = new GuzzleHttpClient();
-        $writer = new Writer($guzzleHttp, $options);
-        $reader = new Reader($guzzleHttp, $options);
-        $client = new Client($reader, $writer);
-
-        $databases = $client->getDatabases();
-
-        $this->assertCount(2, $databases["results"][0]["series"][0]["values"]);
-    }
-
-    public function testCreateANewDatabase()
-    {
-        $options = new Options();
-        $guzzleHttp = new GuzzleHttpClient();
-        $writer = new Writer($guzzleHttp, $options);
-        $reader = new Reader($guzzleHttp, $options);
-        $client = new Client($reader, $writer);
-
-        $client->createDatabase("walter");
-
-        $databases = $client->getDatabases();
-
-        $this->assertCount(3, $databases["results"][0]["series"][0]["values"]);
-    }
-
-    public function testDropExistingDatabase()
-    {
-        $options = new Options();
-        $guzzleHttp = new GuzzleHttpClient();
-        $writer = new Writer($guzzleHttp, $options);
-        $reader = new Reader($guzzleHttp, $options);
-        $client = new Client($reader, $writer);
-
-        $client->createDatabase("walter");
-        $this->assertDatabasesCount(3);
-
-        $client->deleteDatabase("walter");
-        $this->assertDatabasesCount(2);
-    }
-
     /**
      * Test that we handle socket problems correctly in the UDP
      * adapter, and that they don't inturrupt the user's application.

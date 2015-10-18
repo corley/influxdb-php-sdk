@@ -183,16 +183,6 @@ array(1) {
 }
 ```
 
-## Database operations
-
-You can create, list or destroy databases using dedicated methods
-
-```php
-$client->getDatabases(); // list all databases
-$client->createDatabase("my-name"); // create a new database with name "my.name"
-$client->deleteDatabase("my-name"); // delete an existing database with name "my.name"
-```
-
 ## Global tags and retention policy
 
 You can set a set of default tags, that the SDK will add to your metrics:
@@ -300,6 +290,75 @@ $connectionParams = array(
 $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
 ```
 
+## Database operations and custom queries
+
+The class `InfluxDB\Client` does not support any database operation by itself.
+That means that you don't have any helper function for create new databases, or
+list actual databases and so on.
+Thanks to `InfluxDB\Manager` you can use a preset of queries and create your own
+personal queries that will run against the Influxdb instance.
+
+### Create the manager
+
+The `Manager` instance is very simple, you have to create it with a client
+instance.
+
+```php
+$manager = new Manager($client); // InfluxDB\Client instance
+```
+
+### Attach new queries
+
+The manager allows to attach new queries via an helper method `addQuery`.
+
+```php
+$manager->addQuery("getExceptionsInMinutes", function($minutes) {
+    return "SELECT * FROM app_exceptions WHERE time > now() - {$minutes}m";
+});
+
+$manager->getExceptionsInMinutes(10); // The callable name
+```
+
+As you can see you have to label your anonymous function and reuse it via the
+manager.
+
+In order to collect and reuse custom queries you can define query objects:
+
+```php
+class GetExceptionsInMinutes
+{
+    public function __invoke($minutes)
+    {
+        return "SELECT * FROM app_exceptions WHERE time > now() - {$minutes}m";
+    }
+
+    public function __toString()
+    {
+        return "getExceptionsInMinutes";
+    }
+}
+
+$manager->addQuery(new GetExceptionsInMinutes());
+
+$manger->getExceptionsInMinutes(10); //Use the query
+```
+
+As you can see valid query command should be `callable` via the `__invoke`
+method and should be also serializable as strings via `__toString` method
+
+### Existing queries
+
+This project comes out with a preset of valid queries:
+
+ * Create new database `InfluxDB\Query\CreateDatabase`
+ * Drop existing databases `InfluxDB\Query\DeleteDatabase`
+ * List existing databases `InfluxDB\Query\GetDatabases`
+
+```php
+$manager->addQuery(new CreateDatabase());
+$manager->addQuery(new DeleteDatabase());
+$manager->addQuery(new GetDatabases());
+```
 
 ## FAQ
 
