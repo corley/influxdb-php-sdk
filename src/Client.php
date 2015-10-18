@@ -48,16 +48,19 @@ class Client
 
     public function getDatabases()
     {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 0.8.1 and will be removed in 0.9.', E_USER_DEPRECATED);
         return $this->query("show databases");
     }
 
     public function createDatabase($name)
     {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 0.8.1 and will be removed in 0.9.', E_USER_DEPRECATED);
         return $this->query("create database \"{$name}\"");
     }
 
     public function deleteDatabase($name)
     {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 0.8.1 and will be removed in 0.9.', E_USER_DEPRECATED);
         return $this->query("drop database \"{$name}\"");
     }
 }
