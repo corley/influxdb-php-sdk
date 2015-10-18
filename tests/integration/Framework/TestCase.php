@@ -3,9 +3,13 @@ namespace InfluxDB\Integration\Framework;
 
 use GuzzleHttp\Client as GuzzleHttpClient;
 use InfluxDB\Client;
+use InfluxDB\Manager;
 use InfluxDB\Adapter\Http\Options as HttpOptions;
 use InfluxDB\Adapter\Http\Writer;
 use InfluxDB\Adapter\Http\Reader;
+use InfluxDB\Query\CreateDatabase;
+use InfluxDB\Query\DeleteDatabase;
+use InfluxDB\Query\GetDatabases;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +23,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $writer = new Writer($guzzleHttp, $options);
         $reader = new Reader($guzzleHttp, $options);
 
-        $client = $this->client = new Client($reader, $writer);
+        $client = $this->client = new Manager(new Client($reader, $writer));
+
+        $client->addQuery(new CreateDatabase());
+        $client->addQuery(new DeleteDatabase());
+        $client->addQuery(new GetDatabases());
 
         $this->dropAll();
     }
@@ -78,7 +86,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
     public function assertDatabasesCount($count)
     {
         $databases = $this->client->getDatabases();
-        $this->assertCount($count, $databases["results"][0]["series"][0]["values"]);
+        $databaseList = [];
+        if (array_key_exists("values", $databases["results"][0]["series"][0])) {
+            $databaseList = $databases["results"][0]["series"][0]["values"];
+        }
+
+        $this->assertCount($count, $databaseList);
     }
 
     public function getOptions()
