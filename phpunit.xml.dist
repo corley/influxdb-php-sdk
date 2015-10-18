@@ -7,10 +7,10 @@
          convertWarningsToExceptions="true"
          verbose="true">
     <testsuites>
-        <testsuite name="InfluxDB SDK Integration Tests">
+        <testsuite name="integration">
             <directory>tests/integration</directory>
         </testsuite>
-        <testsuite name="InfluxDB SDK Unit Tests">
+        <testsuite name="unit">
             <directory>tests/unit</directory>
         </testsuite>
     </testsuites>
