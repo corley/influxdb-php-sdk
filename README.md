@@ -340,7 +340,7 @@ class GetExceptionsInMinutes
 
 $manager->addQuery(new GetExceptionsInMinutes());
 
-$manger->getExceptionsInMinutes(10); //Use the query
+$manager->getExceptionsInMinutes(10); //Use the query
 ```
 
 As you can see valid query command should be `callable` via the `__invoke`
