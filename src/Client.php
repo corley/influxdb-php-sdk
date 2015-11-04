@@ -3,7 +3,7 @@
 namespace InfluxDB;
 
 use InfluxDB\Adapter\WritableInterface as Writer;
-use InfluxDb\Adapter\QueryableInterface as Reader;
+use InfluxDB\Adapter\QueryableInterface as Reader;
 
 /**
  * Client to manage request at InfluxDB
