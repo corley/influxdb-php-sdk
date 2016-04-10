@@ -63,6 +63,7 @@ trait WriterTrait
 
     protected function pointsToString(array $elements)
     {
+        $elements = array_filter($elements);
         array_walk($elements, function(&$value, $key) {
             $dataType = gettype($value);
             if (!in_array($dataType, ["string", "double", "boolean", "integer"])) {
