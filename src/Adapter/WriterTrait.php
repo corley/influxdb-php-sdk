@@ -63,17 +63,18 @@ trait WriterTrait
 
     protected function pointsToString(array $elements)
     {
-        $elements = array_filter($elements);
         array_walk($elements, function(&$value, $key) {
             $dataType = gettype($value);
             if (!in_array($dataType, ["string", "double", "boolean", "integer"])) {
                 $dataType = "serializable";
             }
             $dataType = ucfirst($dataType);
-            $value = call_user_func([$this, "convert{$dataType}"], $value);
-            $value = "{$key}={$value}";
+            if ($dataType!='Null') {
+                $value = call_user_func([$this, "convert{$dataType}"], $value);
+                $value = "{$key}={$value}";
+            }
         });
-
+        $elements = array_filter($elements);
         return implode(",", $elements);
     }
 
