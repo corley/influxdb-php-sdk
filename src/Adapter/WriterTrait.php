@@ -69,10 +69,12 @@ trait WriterTrait
                 $dataType = "serializable";
             }
             $dataType = ucfirst($dataType);
-            $value = call_user_func([$this, "convert{$dataType}"], $value);
-            $value = "{$key}={$value}";
+            if ($dataType!='Null') {
+                $value = call_user_func([$this, "convert{$dataType}"], $value);
+                $value = "{$key}={$value}";
+            }
         });
-
+        $elements = array_filter($elements);
         return implode(",", $elements);
     }
 
