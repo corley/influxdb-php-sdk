@@ -44,4 +44,38 @@ class WriterTraitTest extends \PHPUnit_Framework_TestCase
             [["one" => (double)"12", "three" => new FloatType("14.123")], "one=12,three=14.123"],
         ];
     }
+
+    /**
+     * @dataProvider getMessages
+     */
+    public function testMessageToLineProtocolGeneratesValidTimeSeries($message, $prepared)
+    {
+        $helper = $this->getMockBuilder("InfluxDB\\Adapter\\WriterTrait")
+            ->getMockForTrait();
+
+        $actual = $helper->messageToLineProtocol($message);
+
+        $this->assertEquals($prepared, $actual);
+    }
+
+    public function getMessages()
+    {
+        return [
+            [
+                [
+                    "points" => [
+                        [
+                            "measurement" => "instance",
+                            "fields" => [
+                                "cpu" => 18.12,
+                                "free" => 712423,
+                            ],
+                            "time" => "12345678m",
+                        ]
+                    ],
+                ],
+                "instance cpu=18.12,free=712423i 12345678m",
+            ]
+        ];
+    }
 }
