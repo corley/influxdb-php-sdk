@@ -6,17 +6,14 @@ php:
   - 7
 
 env:
-  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_0.9.4.1_amd64.deb"
-  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_0.9.4.1_amd64.deb"
-  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_0.9.4.1_amd64.deb"
-  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
-  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
-  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
+  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_0.13.0_amd64.deb"
+  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_0.13.0_amd64.deb"
+  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_0.13.0_amd64.deb"
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install libcurl4-openssl-dev libjson0-dev
-  - wget http://s3.amazonaws.com/influxdb/${INFLUXDB_DEB}
+  - wget --no-check-certificate https://dl.influxdata.com/influxdb/releases/${INFLUXDB_DEB}
   - sudo useradd influxdb
   - sudo dpkg -i ${INFLUXDB_DEB}
   - sudo cp ./scripts/influxdb_conf.toml /etc/opt/influxdb/influxdb.conf
@@ -40,13 +37,3 @@ after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover clover.xml
 
-matrix:
-  allow_failures:
-    - env: GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
-    - env: GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
-    - env: GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_nightly_amd64.deb"
-
-
-notifications:
-  slack:
-    secure: UN4V33CfLzEcb+5/LWcfcbwROZobbUawgFSiM3TzagBC+7w0DH2rK8DczxkUBs5rNAaYBj+DkxmmF9tiDb0BLB7Jezlq0vmrNBOhregLodOG44/bFwg58YOwTGxt/Iak38A+8VskGj0sSybNq4TB1/K0040wXS5bA+M/9NqyQeo=
