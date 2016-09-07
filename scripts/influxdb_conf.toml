@@ -16,14 +16,16 @@ reporting-disabled = false
 ###
 
 [meta]
-  dir = "/var/opt/influxdb/meta"
-  hostname = "localhost"
-  bind-address = ":8088"
+  dir = "/var/lib/influxdb/meta"
+
   retention-autocreate = true
-  election-timeout = "1s"
-  heartbeat-timeout = "1s"
-  leader-lease-timeout = "500ms"
-  commit-timeout = "50ms"
+
+  # If log messages are printed for the meta service
+  logging-enabled = true
+  pprof-enabled = false
+
+  # The default duration for leases.
+  lease-duration = "1m0s"
 
 ###
 ### [data]
@@ -35,17 +37,14 @@ reporting-disabled = false
 ###
 
 [data]
-  dir = "/var/opt/influxdb/data"
+  enabled = true
 
-  # The following WAL settings are for the b1 storage engine used in 0.9.2. They won't
-  # apply to any new shards created after upgrading to a version > 0.9.3.
-  max-wal-size = 104857600 # Maximum size the WAL can reach before a flush. Defaults to 100MB.
-  wal-flush-interval = "10m" # Maximum time data can sit in WAL before a flush.
-  wal-partition-flush-delay = "2s" # The delay time between each WAL partition being flushed.
+  dir = "/var/lib/influxdb/data"
 
   # These are the WAL settings for the storage engine >= 0.9.3
-  wal-dir = "/var/opt/influxdb/wal"
-  wal-enable-logging = true
+  wal-dir = "/var/lib/influxdb/wal"
+  wal-logging-enabled = true
+  data-logging-enabled = true
 
   # When a series in the WAL in-memory cache reaches this size in bytes it is marked as ready to
   # flush to the index
@@ -75,8 +74,13 @@ reporting-disabled = false
 ###
 
 [cluster]
-  shard-writer-timeout = "5s" # The time within which a shard must respond to write.
-  write-timeout = "5s" # The time within which a write operation must complete on the cluster.
+  shard-writer-timeout = "5s" # The time within which a remote shard must respond to a write request.
+  write-timeout = "10s" # The time within which a write request must complete on the cluster.
+  max-concurrent-queries = 0 # The maximum number of concurrent queries that can run. 0 to disable.
+  query-timeout = "0s" # The time within a query must complete before being killed automatically. 0s to disable.
+  max-select-point = 0 # The maximum number of points to scan in a query. 0 to disable.
+  max-select-series = 0 # The maximum number of series to select in a query. 0 to disable.
+  max-select-buckets = 0 # The maximum number of buckets to select in an aggregate query. 0 to disable.
 
 ###
 ### [retention]
@@ -86,7 +90,7 @@ reporting-disabled = false
 
 [retention]
   enabled = true
-  check-interval = "10m"
+  check-interval = "30m"
 
 ###
 ### [admin]
@@ -94,6 +98,16 @@ reporting-disabled = false
 ### Controls the availability of the built-in, web-based admin interface. If HTTPS is
 ### enabled for the admin interface, HTTPS must also be enabled on the [http] service.
 ###
+
+[shard-precreation]
+  enabled = true
+  check-interval = "10m"
+  advance-period = "30m"
+
+[monitor]
+  store-enabled = true # Whether to record statistics internally.
+  store-database = "_internal" # The destination database for recorded statistics
+  store-interval = "10s" # The interval at which to record statistics
 
 [admin]
   enabled = true
@@ -117,6 +131,7 @@ reporting-disabled = false
   pprof-enabled = false
   https-enabled = false
   https-certificate = "/etc/ssl/influxdb.pem"
+  max-row-limit = 10000
 
 ###
 ### [[graphite]]
@@ -226,10 +241,6 @@ reporting-disabled = false
 [continuous_queries]
   log-enabled = true
   enabled = true
-  recompute-previous-n = 2
-  recompute-no-older-than = "10m"
-  compute-runs-per-interval = 10
-  compute-no-more-than = "2m"
 
 ###
 ### [hinted-handoff]
@@ -239,10 +250,3 @@ reporting-disabled = false
 ### of time.
 ###
 
-[hinted-handoff]
-  enabled = true
-  dir = "/var/opt/influxdb/hh"
-  max-size = 1073741824
-  max-age = "168h"
-  retry-rate-limit = 0
-  retry-interval = "1s"
