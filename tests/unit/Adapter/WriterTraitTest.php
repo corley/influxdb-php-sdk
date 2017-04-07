@@ -25,6 +25,8 @@ class WriterTraitTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [["one" => "two"], "one=\"two\""],
+            [["one with space" => "two"], "one\\ with\\ space=\"two\""],
+            [["one with,comma" => "two"], "one\\ with\\,comma=\"two\""],
             [["one" => "two", "three" => "four"], "one=\"two\",three=\"four\""],
             [["one" => true, "three" => false], "one=true,three=false"],
             [["one" => true, "three" => 0., "four" => 1.], "one=true,three=0,four=1"],
