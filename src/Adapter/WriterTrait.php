@@ -52,8 +52,8 @@ trait WriterTrait
     {
         $tagLine = "";
         if (count($tags) > 0) {
-            array_walk($tags, function(&$value, $key) {
-                $value = "{$key}={$value}";
+            array_walk($tags, function (&$value, $key) {
+                $value = "{$this->addSlashes($key)}={$this->addSlashes($value)}";
             });
             $tagLine = sprintf(",%s", implode(",", $tags));
         }
@@ -63,7 +63,7 @@ trait WriterTrait
 
     protected function pointsToString(array $elements)
     {
-        array_walk($elements, function(&$value, $key) {
+        array_walk($elements, function (&$value, $key) {
             $dataType = gettype($value);
             if (!in_array($dataType, ["string", "double", "boolean", "integer"])) {
                 $dataType = "serializable";
@@ -71,7 +71,7 @@ trait WriterTrait
             $dataType = ucfirst($dataType);
             if ($dataType!='Null') {
                 $value = call_user_func([$this, "convert{$dataType}"], $value);
-                $value = "{$key}={$value}";
+                $value = "{$this->addSlashes($key)}={$value}";
             }
         });
         $elements = array_filter($elements);
@@ -101,5 +101,24 @@ trait WriterTrait
     protected function convertBoolean($value)
     {
         return (($value) ? "true" : "false");
+    }
+
+    /**
+     * Returns strings with space, comma, or equals sign characters backslashed per Influx write protocol syntax
+     *
+     * @param string $value
+     * @return string
+     */
+    private function addSlashes($value)
+    {
+        return str_replace([
+            ' ',
+            ',',
+            '='
+        ], [
+            '\ ',
+            '\,',
+            '\='
+        ], $value);
     }
 }
