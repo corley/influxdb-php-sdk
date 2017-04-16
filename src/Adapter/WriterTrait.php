@@ -22,7 +22,7 @@ trait WriterTrait
             $tagLine = $this->tagsToString($tags);
 
             $lines[] = sprintf(
-                "%s%s %s %d", $point["measurement"], $tagLine, $this->pointsToString($point["fields"]), $point["time"]
+                "%s%s %s %s", $point["measurement"], $tagLine, $this->pointsToString($point["fields"]), $point["time"]
             );
         }
 
@@ -40,8 +40,12 @@ trait WriterTrait
         }
 
         if (array_key_exists("time", $message)) {
-            $dt = new DateTime($message["time"]);
-            $unixepoch = (int)($dt->format("U") * 1e9);
+            if (preg_match("/^(\d+)[n,u,ms,s,m,h]$/i", $message["time"])) {
+                $unixepoch = $message["time"];
+            } else {
+                $dt = new DateTime($message["time"]);
+                $unixepoch = (int)($dt->format("U") * 1e9);
+            }
         }
         $message["time"] = $unixepoch;
 

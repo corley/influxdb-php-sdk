@@ -62,6 +62,51 @@ $client->mark([
 ]);
 ```
 
+### Time precision
+
+You can specify the time precision in different ways, directly using:
+`n,u,ms,s,m,h`:
+
+```php
+$client->mark([
+    "tags" => [
+        "dc" => "eu-west-1",
+    ],
+    "points" => [
+        [
+            "measurement" => "instance",
+            "fields" => [
+                "cpu" => 18.12,
+                "free" => 712423,
+            ],
+            "time" => "12345678s"
+        ],
+    ]
+]);
+```
+
+or otherwise using the ISO8601 datatime format:
+
+```php
+$client->mark([
+    "tags" => [
+        "dc" => "eu-west-1",
+    ],
+    "points" => [
+        [
+            "measurement" => "instance",
+            "fields" => [
+                "cpu" => 18.12,
+                "free" => 712423,
+            ],
+            "time" => "2016-05-22T07:23:16Z"
+        ],
+    ]
+]);
+```
+
+If you skip the `time` section the current timestamp is used
+
 Retrieve existing points:
 
 ```php

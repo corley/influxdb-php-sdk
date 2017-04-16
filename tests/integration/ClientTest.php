@@ -124,4 +124,35 @@ class ClientTest extends TestCase
 
         $client->mark("udp.test", ["mark" => "element"]);
     }
+
+    public function testForceTimePrecisionDuringMarkOperation()
+    {
+        $options = new Options();
+        $options->setDatabase("tcp.test");
+
+        $guzzleHttp = new GuzzleHttpClient();
+        $writer = new Writer($guzzleHttp, $options);
+        $reader = new Reader($guzzleHttp, $options);
+        $client = new Client($reader, $writer);
+
+        $client->mark([
+            "database" => "tcp.test",
+            "retentionPolicy" => "default",
+            "points" => [
+                [
+                    "measurement" => "tt",
+                    "fields" => [
+                        "cpu" => 1,
+                        "mem" => 2,
+                    ],
+                    "time" => "1463912094s"
+                ]
+            ],
+        ]);
+
+        $this->assertSerieExists("tcp.test", "tt");
+        $this->assertSerieCount("tcp.test", "tt", 1);
+        $this->assertValueExistsInSerie("tcp.test", "tt", "cpu", 1);
+        $this->assertValueExistsInSerie("tcp.test", "tt", "mem", 2);
+    }
 }
