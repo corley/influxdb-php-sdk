@@ -1,14 +1,13 @@
 language: php
 
 php:
-  - 5.5
   - 5.6
-  - 7
+  - 7.0
+  - 7.1
 
 env:
-  - GUZZLE_VERSION="~4" INFLUXDB_DEB="influxdb_0.13.0_amd64.deb"
-  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_0.13.0_amd64.deb"
-  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_0.13.0_amd64.deb"
+  - GUZZLE_VERSION="~5" INFLUXDB_DEB="influxdb_1.2.4_amd64.deb"
+  - GUZZLE_VERSION="~6" INFLUXDB_DEB="influxdb_1.2.4_amd64.deb"
 
 before_install:
   - sudo apt-get update
