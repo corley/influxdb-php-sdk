@@ -13,7 +13,7 @@ This project support InfluxDB API `>= 0.9` - **For InfluxDB v0.8 checkout branch
 Supported adapters:
 
  * UDP/IP
- * HTTP (via GuzzleHTTP versions: ~4, ~5, ~6)
+ * HTTP (via GuzzleHTTP versions: ~5, ~6)
 
 ## Install it
 
@@ -379,4 +379,15 @@ If you don't have the `sockets` extension, you can proceed in two ways:
   2. Enter in the `ext/sockets` directory
   3. Issue a `phpize && ./configure && make -j && sudo make install`
   4. Add `extension=sockets.so` to your php.ini
+
+### Guzzle 4 support
+
+Currently we drop the Guzzle 4 support, but we tested as working HTTP adapter in up
+to PHP 7.0 and is stable with this project with version 0.9.3.
+
+If you need Guzzle 4 as HTTP adapter require for 0.9.3 version
+
+```sh
+compose require corley/influxdb-sdk:0.9.3
+```
 
