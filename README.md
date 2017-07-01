@@ -13,14 +13,14 @@ This project support InfluxDB API `>= 0.9` - **For InfluxDB v0.8 checkout branch
 Supported adapters:
 
  * UDP/IP
- * HTTP (via GuzzleHTTP versions: ~5, ~6)
+ * HTTP (via GuzzleHTTP versions: ~5, ~6) - **For Guzzle 4 support checkout branch 0.9 (no longer supported)**
 
 ## Install it
 
 Just use composer
 
 ```sh
-$ composer require corley/influxdb-sdk
+$ composer require corley/influxdb-sdk:~1
 ```
 
 Or add to your `composer.json` file
@@ -28,7 +28,7 @@ Or add to your `composer.json` file
 ```json
 {
   "require": {
-    "corley/influxdb-sdk": "0.9.*"
+    "corley/influxdb-sdk": "~1"
   }
 }
 ```
@@ -382,12 +382,12 @@ If you don't have the `sockets` extension, you can proceed in two ways:
 
 ### Guzzle 4 support
 
-Currently we drop the Guzzle 4 support, but we tested as working HTTP adapter in up
+We drop the Guzzle 4 support, but we tested it as working HTTP adapter in up
 to PHP 7.0 and is stable with this project with version 0.9.3.
 
 If you need Guzzle 4 as HTTP adapter require for 0.9.3 version
 
 ```sh
-compose require corley/influxdb-sdk:0.9.3
+compose require corley/influxdb-sdk:0.9.*
 ```
 
