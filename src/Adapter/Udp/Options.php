@@ -3,16 +3,9 @@ namespace InfluxDB\Adapter\Udp;
 
 class Options
 {
-    private $host;
-    private $port;
-    private $tags;
-
-    public function __construct()
-    {
-        $this->setHost("localhost");
-        $this->setTags([]);
-        $this->setPort(4444);
-    }
+    private $host = 'localhost';
+    private $port = 4444;
+    private $tags = [];
 
     public function getPort()
     {
