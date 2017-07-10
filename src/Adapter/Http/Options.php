@@ -3,28 +3,15 @@ namespace InfluxDB\Adapter\Http;
 
 class Options
 {
-    private $host;
-    private $port;
-    private $username;
-    private $password;
-    private $protocol;
+    private $host = 'localhost';
+    private $port = 8086;
+    private $username = 'root';
+    private $password = 'root';
+    private $protocol = 'http';
     private $database;
-    private $retentionPolicy;
-    private $tags;
-    private $prefix;
-
-    public function __construct()
-    {
-        $this->setHost("localhost");
-        $this->setPort(8086);
-        $this->setUsername("root");
-        $this->setPassword("root");
-        $this->setProtocol("http");
-        $this->setPrefix("");
-
-        $this->setRetentionPolicy("default");
-        $this->setTags([]);
-    }
+    private $retentionPolicy = 'default';
+    private $tags = [];
+    private $prefix = '';
 
     public function getPrefix()
     {
