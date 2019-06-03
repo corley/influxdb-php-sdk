@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 use InfluxDB\Adapter\WriterTrait;
 use InfluxDB\Adapter\Http\Options;
 use InfluxDB\Adapter\WritableInterface;
+use InfluxDB\Client as InfluxClient;
 
 class Writer implements WritableInterface
 {
@@ -12,6 +13,8 @@ class Writer implements WritableInterface
 
     private $httpClient;
     private $options;
+
+    const ENDPOINT = "write";
 
     public function __construct(Client $httpClient, Options $options)
     {
@@ -26,13 +29,15 @@ class Writer implements WritableInterface
 
     public function send(array $message)
     {
+        $objOptions = $this->getOptions();
         $httpMessage = [
-            "auth" => [$this->getOptions()->getUsername(), $this->getOptions()->getPassword()],
+            "auth" => [$objOptions->getUsername(), $objOptions->getPassword()],
             'query' => [
-                "db" => $this->getOptions()->getDatabase(),
-                "retentionPolicy" => $this->getOptions()->getRetentionPolicy(),
+                "db" => $objOptions->getDatabase(),
+                "retentionPolicy" => $objOptions->getRetentionPolicy(),
+                "precision"=>InfluxClient::toValidQueryPrecision($objOpts->getPrecision(), self::ENDPOINT)
             ],
-            "body" => $this->messageToLineProtocol($message, $this->getOptions()->getTags())
+            "body" => $this->messageToLineProtocol($message, $objOptions->getTags())
         ];
 
         $endpoint = $this->getHttpSeriesEndpoint();
@@ -41,17 +46,18 @@ class Writer implements WritableInterface
 
     protected function getHttpSeriesEndpoint()
     {
-        return $this->getHttpEndpoint("write");
+        return $this->getHttpEndpoint(self::ENDPOINT);
     }
 
     private function getHttpEndpoint($operation)
     {
+        $objOptions = $this->getOptions();
         $url = sprintf(
             "%s://%s:%d%s/%s",
-            $this->getOptions()->getProtocol(),
-            $this->getOptions()->getHost(),
-            $this->getOptions()->getPort(),
-            $this->getOptions()->getPrefix(),
+            $objOptions->getProtocol(),
+            $objOptions->getHost(),
+            $objOptions->getPort(),
+            $objOptions->getPrefix(),
             $operation
         );
 

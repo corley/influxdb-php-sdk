@@ -1,6 +1,8 @@
 <?php
 namespace InfluxDB\Adapter\Http;
 
+use InfluxDB\Client as InfluxClient;
+
 class Options
 {
     private $host;
@@ -12,6 +14,8 @@ class Options
     private $retentionPolicy;
     private $tags;
     private $prefix;
+    private $epoch;
+    private $precision;
 
     public function __construct()
     {
@@ -21,7 +25,8 @@ class Options
         $this->setPassword("root");
         $this->setProtocol("http");
         $this->setPrefix("");
-
+        $this->setEpoch(InfluxClient::PRECISION_RFC3339);
+        $this->setPrecision(InfluxClient::PRECISION_NANOSECONDS);
         $this->setRetentionPolicy("default");
         $this->setTags([]);
     }
@@ -124,4 +129,18 @@ class Options
         $this->database = $database;
         return $this;
     }
+
+    public function getEpoch() { return $this->epoch; } // fin getEpoch()
+
+    public function setEpoch($value) {
+        if (!InfluxClient::validatePrecision($value)) { throw new \Exception("Precisión inválida."); } // fin if
+        $this->epoch = $value;
+    } // fin setEpoch()
+
+    public function getPrecision() { return $this->precision; } // fin getPrecision()
+
+    public function setPrecision($value) {
+        if (!InfluxClient::validatePrecision($value)) { throw new \Exception("Precisión inválida."); } // fin if
+        $this->precision = $value;
+    } // fin setPrecision()
 }

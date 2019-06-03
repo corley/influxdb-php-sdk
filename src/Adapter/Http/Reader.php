@@ -2,6 +2,7 @@
 namespace InfluxDB\Adapter\Http;
 
 use InfluxDB\Adapter\Http\Options;
+use InfluxDB\Client as InfluxClient;
 use GuzzleHttp\Client;
 use InfluxDB\Adapter\QueryableInterface;
 
@@ -9,6 +10,8 @@ class Reader implements QueryableInterface
 {
     private $httpClient;
     private $options;
+
+    const ENDPOINT = "query";
 
     public function __construct(Client $httpClient, Options $options)
     {
@@ -23,11 +26,13 @@ class Reader implements QueryableInterface
 
     public function query($query)
     {
+        $objOpts = $this->getOptions();
         $options = [
-            "auth" => [$this->getOptions()->getUsername(), $this->getOptions()->getPassword()],
+            "auth" => [$objOpts->getUsername(), $objOpts->getPassword()],
             'query' => [
                 "q" => $query,
-                "db" => $this->getOptions()->getDatabase(),
+                "db" => $objOpts->getDatabase(),
+                "epoch"=>InfluxClient::toValidQueryPrecision($objOpts->getEpoch(), self::ENDPOINT)
             ]
         ];
 
@@ -42,17 +47,18 @@ class Reader implements QueryableInterface
 
     protected function getHttpQueryEndpoint()
     {
-        return $this->getHttpEndpoint("query");
+        return $this->getHttpEndpoint(self::ENDPOINT);
     }
 
     private function getHttpEndpoint($operation)
     {
+        $objOpts = $this->getOptions();
         $url = sprintf(
             "%s://%s:%d%s/%s",
-            $this->getOptions()->getProtocol(),
-            $this->getOptions()->getHost(),
-            $this->getOptions()->getPort(),
-            $this->getOptions()->getPrefix(),
+            $objOpts->getProtocol(),
+            $objOpts->getHost(),
+            $objOpts->getPort(),
+            $objOpts->getPrefix(),
             $operation
         );
 
